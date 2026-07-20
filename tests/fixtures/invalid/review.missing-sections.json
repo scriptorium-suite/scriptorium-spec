@@ -1,0 +1,14 @@
+{
+  "schema_version": "review/1.0",
+  "direction": {
+    "query": "[SYNTHETIC] XQ-17 calibration methods in generated demo papers",
+    "created": "2100-01-02T11:15:00Z"
+  },
+  "comparison_table": {
+    "columns": ["Synthetic model", "Generated range"],
+    "rows": [
+      { "citekey": "example2100Xq17Robust", "cells": ["[SYNTHETIC] Robust demo transformation", "0-1 synthetic units"] }
+    ]
+  },
+  "gaps": ["[SYNTHETIC] Review missing the required 'sections' array — there is no narrative body."]
+}

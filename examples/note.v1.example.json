@@ -1,0 +1,13 @@
+{
+  "schema_version": "note/1.0",
+  "note_id": "2100-01-03-synthetic-xq17-drift-0001",
+  "source": "agent",
+  "created": "2100-01-03T09:12:00Z",
+  "project": "synthetic-xq17-calibration",
+  "title": "[SYNTHETIC] Demo idea for XQ-17 drift checks",
+  "tags": ["synthetic-demo", "calibration"],
+  "private": true,
+  "origin_path": "Inbox/2100-01-03 synthetic XQ-17 idea.md",
+  "generated_by": "synthetic-agent-adapter",
+  "body": "[SYNTHETIC] Test whether a generated XQ-17 drift indicator predicts error in the fictional demo dataset; this is not a real research hypothesis."
+}

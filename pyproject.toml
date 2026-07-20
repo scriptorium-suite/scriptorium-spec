@@ -1,0 +1,17 @@
+[project]
+name = "scriptorium-spec"
+version = "2.2.0"
+description = "Shared data contracts for the Scriptorium suite"
+requires-python = "==3.12.*"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "jsonschema==4.23.0",
+    "pytest==7.4.4",
+]
+
+[tool.uv]
+package = false
+required-version = "==0.11.16"
+python-preference = "only-managed"

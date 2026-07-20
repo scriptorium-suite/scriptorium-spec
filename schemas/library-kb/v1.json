@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/library-kb/v1.json",
+  "title": "Scriptorium Library KB v1",
+  "description": "Canonical machine-readable snapshot of a reference library (produced by Steward `export`, consumed by Provenance and tolerant agents/tools). Consumers MUST ignore and preserve unknown fields.",
+  "type": "object",
+  "required": ["schema_version", "items"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^library-kb/1\\.[0-9]+$",
+      "description": "Format identifier and version, e.g. \"library-kb/1.0\" or \"library-kb/1.1\". Minor 1.1 adds the optional citekey field; 1.0 remains valid. Major bump = breaking, minor bump = additive."
+    },
+    "generated_by": {
+      "type": "string",
+      "description": "Producer tool and version, e.g. \"steward 0.2.0\"."
+    },
+    "library": {
+      "type": "object",
+      "description": "Optional source-library identification.",
+      "properties": {
+        "type": { "type": "string", "enum": ["user", "group"] },
+        "id": { "type": "string" }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "title"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[A-Z0-9]{8}$",
+            "description": "Zotero item key (stable identifier within a library)."
+          },
+          "citekey": {
+            "type": "string",
+            "description": "Better BibTeX citation key (from the item's extra field `Citation Key:` line); empty when unset. The universal cross-system join — keys reading-note/1.0 and resolves `[[citekey]]` wikilinks to the library note. Optional and introduced in library-kb/1.1. Consumers remain tolerant of historical 1.0 payloads that already carry it."
+          },
+          "title": { "type": "string" },
+          "authors": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Last names (or full names for institutional authors), in original order."
+          },
+          "year": {
+            "type": "string",
+            "pattern": "^([0-9]{4})?$",
+            "description": "4-digit publication year, or empty string when unknown."
+          },
+          "doi": { "type": "string" },
+          "itemType": { "type": "string", "description": "Zotero item type, e.g. journalArticle, thesis, book." },
+          "folders": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Collection paths, '/'-separated from the top level, e.g. \"01_ML/Core\"."
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "All tags verbatim, including ai:-prefixed machine tags."
+          },
+          "aiTags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Machine tags with the ai: prefix stripped. Derived from `tags`; producers SHOULD keep both consistent."
+          },
+          "tldr": {
+            "type": "string",
+            "description": "One-sentence summary, extracted from the item's extra field `TLDR:` line."
+          },
+          "readStatus": {
+            "type": "string",
+            "enum": ["", "New", "To Read", "In Progress", "Read", "Not Reading"],
+            "description": "zotero-reading-list status (extra field `Read_Status:` line); empty when unset."
+          },
+          "abstract": { "type": "string" },
+          "pdfPaths": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Absolute local paths to PDF attachments. Machine-specific; consumers MUST NOT assume they exist."
+          },
+          "dateAdded": { "type": "string", "description": "Zotero dateAdded, 'YYYY-MM-DD HH:MM:SS' or ISO 8601." }
+        }
+      }
+    }
+  }
+}

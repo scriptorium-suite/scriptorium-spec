@@ -1,0 +1,22 @@
+{
+  "schema_version": "session-summary/1.0",
+  "summary_id": "synthetic-xq17-calibration-2100-01-03-demo001",
+  "project": "synthetic-xq17-calibration",
+  "created": "2100-01-03T18:40:00Z",
+  "session_id": "demo-session-0001",
+  "approval_state": "draft",
+  "timeline": [
+    "[SYNTHETIC] Updated src/demo_pipeline.py and results/synthetic_metrics.csv",
+    "[SYNTHETIC] Recorded generated checkpoint demo0001"
+  ],
+  "status": "active",
+  "stage": "synthetic validation",
+  "next_actions": [
+    "Validate the generated fixture",
+    "Draft the synthetic method summary"
+  ],
+  "conclusion": "[SYNTHETIC] The generated fixture completed; this is not a real performance result.",
+  "blocked_by": "",
+  "confidence": "medium",
+  "generated_by": "synthetic-agent-adapter"
+}

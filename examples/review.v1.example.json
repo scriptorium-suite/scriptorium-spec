@@ -1,0 +1,30 @@
+{
+  "schema_version": "review/1.0",
+  "direction": {
+    "query": "[SYNTHETIC] XQ-17 calibration methods in generated demo papers",
+    "created": "2100-01-02T11:15:00Z"
+  },
+  "sections": [
+    {
+      "heading": "[SYNTHETIC] Evolution of the XQ-17 demo calibration",
+      "prose": "[SYNTHETIC] The fictional lineage moves from generated principles to a baseline, a drift fixture, and a robust demo transformation. These records exist only to demonstrate cross-paper synthesis and make no scientific claim."
+    },
+    {
+      "heading": "[SYNTHETIC] Generated validation and drift checks",
+      "prose": "[SYNTHETIC] The comparison records a held-out generated split and a fictional drift indicator so the review contract can carry methods, limitations, and evidence links without exposing real research."
+    }
+  ],
+  "comparison_table": {
+    "columns": ["Synthetic model", "Generated range", "Demo error"],
+    "rows": [
+      { "citekey": "example2098Xq17Baseline", "cells": ["[SYNTHETIC] Baseline transformation", "0-1 synthetic units", "0.20 synthetic units"] },
+      { "citekey": "example2100Xq17Robust", "cells": ["[SYNTHETIC] Robust demo transformation", "0-1 synthetic units", "0.12 synthetic units"] }
+    ]
+  },
+  "gaps": [
+    "[SYNTHETIC] The fixture does not test any real sensor or physical process.",
+    "[SYNTHETIC] Generated rows are intentionally too small for a real-world conclusion."
+  ],
+  "priority_reads": ["example2099Xq17Drift"],
+  "lineage_ref": "_synthesis/xq17-calibration.synthetic.lineage-graph.json"
+}

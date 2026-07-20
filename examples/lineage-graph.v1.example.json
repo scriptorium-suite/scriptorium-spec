@@ -1,0 +1,27 @@
+{
+  "schema_version": "lineage-graph/1.0",
+  "direction": {
+    "query": "[SYNTHETIC] XQ-17 calibration methods in generated demo papers",
+    "scope_method": "synthetic fixture reference walk + agent typing during synthesis",
+    "created": "2100-01-02T00:00:00Z"
+  },
+  "nodes": [
+    { "citekey": "example2097Xq17Principles", "title": "[SYNTHETIC] Principles of the XQ-17 Crystal Sensor", "year": "2097", "cluster": "synthetic-foundations" },
+    { "citekey": "example2098Xq17Baseline", "title": "[SYNTHETIC] Baseline Calibration for XQ-17", "year": "2098", "cluster": "synthetic-calibration" },
+    { "citekey": "example2099Xq17Drift", "title": "[SYNTHETIC] Drift Characterization in Generated XQ-17 Data", "year": "2099", "cluster": "synthetic-calibration" },
+    { "citekey": "example2100Xq17Robust", "title": "[SYNTHETIC] Robust XQ-17 Calibration Under Simulated Noise", "year": "2100", "cluster": "synthetic-calibration" }
+  ],
+  "edges": [
+    { "from": "example2098Xq17Baseline", "to": "example2097Xq17Principles", "relation": "cites" },
+    { "from": "example2099Xq17Drift", "to": "example2098Xq17Baseline", "relation": "extends", "evidence": "_parsed/example2099Xq17Drift.synthetic.json#sec-generated-drift" },
+    { "from": "example2100Xq17Robust", "to": "example2097Xq17Principles", "relation": "cites" },
+    { "from": "example2100Xq17Robust", "to": "example2099Xq17Drift", "relation": "supersedes", "evidence": "_parsed/example2100Xq17Robust.synthetic.json#sec-synthetic-validation" },
+    { "from": "example2100Xq17Robust", "to": "example2097Xq17Principles", "relation": "method-of", "evidence": "_parsed/example2100Xq17Robust.synthetic.json#sec-demo-method" },
+    { "from": "example2100Xq17Robust", "to": "example2098Xq17Baseline", "relation": "contrasts", "evidence": "_parsed/example2100Xq17Robust.synthetic.json#sec-generated-comparison" }
+  ],
+  "clusters": [
+    { "id": "synthetic-foundations", "label": "[SYNTHETIC] XQ-17 demo foundations" },
+    { "id": "synthetic-calibration", "label": "[SYNTHETIC] XQ-17 generated calibration methods" }
+  ],
+  "timeline": ["example2097Xq17Principles", "example2098Xq17Baseline", "example2099Xq17Drift", "example2100Xq17Robust"]
+}

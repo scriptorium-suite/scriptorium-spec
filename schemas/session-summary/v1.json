@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/session-summary/v1.json",
+  "title": "Scriptorium Session Summary v1",
+  "description": "A supported agent-host session's normalized writeback (see specs/sync-layer.md §4). Claude Code may enqueue from SessionEnd; Codex currently uses an on-demand local-log scan. The document separates low-risk `timeline` facts from gated high-value claims (`status`/`stage`/`next_actions`/`conclusion`/`blocked_by`). `summary_id` is the idempotency key for the append-only progress-log writer.",
+  "type": "object",
+  "required": ["schema_version", "summary_id", "project", "created", "approval_state"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^session-summary/1\\.[0-9]+$" },
+    "summary_id": {
+      "type": "string",
+      "description": "Stable id = the idempotency key; re-applying the same summary_id is a no-op (no double-logging)."
+    },
+    "project": { "type": "string", "description": "Owning project_id (project/1.0); resolved from the session cwd." },
+    "created": { "type": "string", "description": "ISO 8601 timestamp." },
+    "approval_state": {
+      "type": "string",
+      "enum": ["draft", "approved", "applied"],
+      "description": "Lifecycle: draft -> approved (user) -> applied (written to project note + memory)."
+    },
+    "session_id": { "type": "string", "description": "Source agent-host session id, if available." },
+    "timeline": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Auto, low-risk facts (files touched / commits / session bullets); applied without approval."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "active", "paused", "done", "archived"],
+      "description": "Gated high-value claim: proposed project status (project/1.0 enum)."
+    },
+    "stage": {
+      "type": "string",
+      "description": "Gated high-value claim: proposed FREE-TEXT project phase (project/1.0 `stage`); no enum, unlike status."
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Gated high-value claim: proposed next steps."
+    },
+    "conclusion": { "type": "string", "description": "Gated high-value claim: one-line takeaway." },
+    "blocked_by": { "type": "string", "description": "Gated high-value claim: what blocks progress, empty if none." },
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+    "generated_by": { "type": "string" }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "schema_version": "library-kb/1.0",
+  "generated_by": "steward 0.1.0",
+  "items": [
+    "this is a bare string, not an item object"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/note/v1.json",
+  "title": "Scriptorium Note v1",
+  "description": "A free-text human note or idea normalized by a supported or optional capture adapter and ingested into Provenance by the host sync layer (see specs/sync-layer.md §4). Carries `private` so personal-zone notes (Inbox/, _planning/) are usable as project context and local search but excluded from the profile/persona pipeline and kept in the protected layer.",
+  "type": "object",
+  "required": ["schema_version", "note_id", "source", "created", "body"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^note/1\\.[0-9]+$" },
+    "note_id": {
+      "type": "string",
+      "description": "Stable, collision-safe id; minted by the producer or host-stamped on first ingest."
+    },
+    "source": {
+      "type": "string",
+      "enum": ["obsidian", "openclaw", "agent"],
+      "description": "Where this v1 note originated: an optional Obsidian adapter, the optional openclaw compatibility path, or an agent/host workflow. These enum values do not make either optional integration a core dependency."
+    },
+    "created": { "type": "string", "description": "ISO 8601 timestamp." },
+    "body": { "type": "string", "description": "The note text (Markdown)." },
+    "project": { "type": "string", "description": "Owning project_id (project/1.0), if known." },
+    "title": { "type": "string" },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "private": {
+      "type": "boolean",
+      "description": "True for personal-zone notes (Inbox/, _planning/): ingested to memory but excluded from profile generation and stored protected. Defaults to true for those zones."
+    },
+    "origin_path": { "type": "string", "description": "Original Markdown-workspace-relative path, if materialized from a file." },
+    "generated_by": { "type": "string" }
+  }
+}

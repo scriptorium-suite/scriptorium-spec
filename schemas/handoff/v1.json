@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/handoff/v1.json",
+  "title": "Scriptorium Paper Handoff (v1, currently handoff/1.1)",
+  "description": "Metadata sidecar (meta.json) staged next to one or more papers when handing a report from the library (Steward `pick`) to a downstream consumer such as Lectern (slides generation). One directory per handoff: <staging>/<key>/{<file>.pdf, meta.json}. Single-paper (1.0): the top-level fields ARE the paper. Multi-paper (1.1): `papers[]` lists the sources and the top-level `title` is the report title; `report_type` says whether it is a literature or experiment report. 1.1 is additive — a 1.0 package validates unchanged.",
+  "type": "object",
+  "required": ["schema_version", "key", "title"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^handoff/1\\.[0-9]+$"
+    },
+    "key": { "type": "string", "pattern": "^[A-Z0-9]{8}$" },
+    "report_type": {
+      "enum": ["literature", "experiment"],
+      "default": "literature",
+      "description": "1.1: kind of report. Optional; defaults to literature."
+    },
+    "title": { "type": "string", "description": "Single-paper: the paper title. Multi-paper: the report title." },
+    "authors": { "type": "array", "items": { "type": "string" } },
+    "year": { "type": "string", "pattern": "^([0-9]{4})?$" },
+    "doi": { "type": "string" },
+    "tldr": { "type": "string" },
+    "abstract": { "type": "string" },
+    "folders": { "type": "array", "items": { "type": "string" } },
+    "pdfFilename": {
+      "type": "string",
+      "description": "Filename of the staged PDF (single-paper form)."
+    },
+    "papers": {
+      "type": "array",
+      "description": "1.1 multi-paper form. Each item is one source paper staged in the same directory. When present, the top-level fields describe the report, not a paper.",
+      "items": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string" },
+          "authors": { "type": "array", "items": { "type": "string" } },
+          "year": { "type": "string", "pattern": "^([0-9]{4})?$" },
+          "doi": { "type": "string" },
+          "tldr": { "type": "string" },
+          "abstract": { "type": "string" },
+          "folders": { "type": "array", "items": { "type": "string" } },
+          "pdfFilename": { "type": "string" }
+        }
+      }
+    }
+  }
+}

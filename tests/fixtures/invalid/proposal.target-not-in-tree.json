@@ -1,0 +1,21 @@
+{
+  "schema_version": "proposal/1.0",
+  "generated_by": "negative fixture",
+  "target_tree": [
+    "00_收件箱",
+    "01_XQ17_methods/baseline"
+  ],
+  "proposals": [
+    {
+      "key": "7TGUJ3U3",
+      "title": "Primary flaw: target is absent from target_tree (cross-field rule)",
+      "targets": ["99_does_not_exist/ghost_folder"],
+      "confidence": "high"
+    },
+    {
+      "key": "lowercasekey",
+      "title": "Secondary flaw: bad key pattern, so plain JSON Schema also rejects this file",
+      "targets": ["00_收件箱"]
+    }
+  ]
+}

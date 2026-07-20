@@ -1,0 +1,61 @@
+{
+  "schema_version": "parsed-paper/1.0",
+  "id": "example2100Xq17Robust",
+  "created": "2100-01-02T10:15:00Z",
+  "parser": "synthetic-fixture",
+  "source_pdf": "C:/ScriptoriumDemo/papers/xq17-robust.synthetic.pdf",
+  "metadata": {
+    "title": "[SYNTHETIC] Robust XQ-17 Calibration Under Simulated Noise",
+    "authors": ["Example Author A", "Example Author B"],
+    "year": "2100",
+    "doi": "10.0000/scriptorium-demo-xq17-003",
+    "abstract": "[SYNTHETIC] This generated abstract describes a fictional calibration fixture and contains no real publication text or scientific claim."
+  },
+  "sections": [
+    {
+      "heading": "Introduction",
+      "level": 1,
+      "text": "[SYNTHETIC] The XQ-17 sensor and every observation in this section are generated solely to exercise parsed-paper fields."
+    },
+    {
+      "heading": "Synthetic Calibration Method",
+      "level": 1,
+      "text": "[SYNTHETIC] A deterministic demo transformation maps generated XQ-17 signals to synthetic units; the values have no real-world interpretation."
+    },
+    {
+      "heading": "Generated Validation Checks",
+      "level": 2,
+      "text": "[SYNTHETIC] The fixture marks held-out generated rows and confirms only that the example workflow can record a validation gate."
+    }
+  ],
+  "references": [
+    {
+      "raw": "Example Author A (2097). [SYNTHETIC] Principles of the XQ-17 Crystal Sensor. Demo Journal 1, 1-5.",
+      "title": "[SYNTHETIC] Principles of the XQ-17 Crystal Sensor",
+      "authors": ["Example Author A"],
+      "year": "2097",
+      "doi": "10.0000/scriptorium-demo-xq17-000"
+    },
+    {
+      "raw": "Example Author B (2099). [SYNTHETIC] Drift Characterization in Generated XQ-17 Data. Demo Journal 3, 10-15.",
+      "title": "[SYNTHETIC] Drift Characterization in Generated XQ-17 Data",
+      "authors": ["Example Author B"],
+      "year": "2099",
+      "doi": "10.0000/scriptorium-demo-xq17-002"
+    }
+  ],
+  "figures": [
+    {
+      "id": "fig-demo-1",
+      "caption": "[SYNTHETIC] Generated XQ-17 calibration values versus generated targets.",
+      "page": 4
+    }
+  ],
+  "tables": [
+    {
+      "id": "tbl-demo-1",
+      "caption": "[SYNTHETIC] Coefficients for the fictional XQ-17 demo transformation.",
+      "n_rows": 4
+    }
+  ]
+}

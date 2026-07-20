@@ -1,0 +1,24 @@
+{
+ "schema_version": "handoff/1.1",
+ "key": "RPTDEMO1",
+ "report_type": "literature",
+ "title": "[SYNTHETIC] XQ-17 calibration literature demo (2 fictional papers)",
+ "papers": [
+  {
+   "title": "[SYNTHETIC] Drift Characterization in Generated XQ-17 Data",
+   "authors": ["Example Author A", "Example Author B"],
+   "year": "2099",
+   "doi": "10.0000/scriptorium-demo-xq17-002",
+   "tldr": "[SYNTHETIC] Generated drift observations provide a fictional comparison point for the demo.",
+   "pdfFilename": "p1_xq17-drift.synthetic.pdf"
+  },
+  {
+   "title": "[SYNTHETIC] Robust XQ-17 Calibration Under Simulated Noise",
+   "authors": ["Example Author A", "Example Author B"],
+   "year": "2100",
+   "doi": "10.0000/scriptorium-demo-xq17-003",
+   "tldr": "[SYNTHETIC] A generated fixture demonstrates robust calibration under simulated noise.",
+   "pdfFilename": "p2_xq17-robust.synthetic.pdf"
+  }
+ ]
+}

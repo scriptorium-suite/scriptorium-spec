@@ -1,0 +1,8 @@
+{
+  "schema_version": "parsed-paper/1.0",
+  "created": "2026-06-22T10:15:00Z",
+  "parser": "grobid",
+  "metadata": {
+    "title": "Parsed paper missing the required 'id' citekey — the universal join id."
+  }
+}

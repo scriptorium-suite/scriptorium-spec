@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/lineage-graph/v1.json",
+  "title": "Scriptorium Lineage Graph v1",
+  "description": "A research direction's 脉络 / lineage over a SET of own-library papers, built in two passes. (1) DETERMINISTIC: Steward `lineage` reads each paper's parsed-paper/1.0, emits one `node` per paper from its metadata, and walks the parsed `references` to add a `cites` edge wherever a reference matches another paper IN THE SET (by DOI when present, else normalized title) — `evidence` is that matched reference's raw string — plus a year-ordered `timeline`. (2) AGENT-ENRICHED: the `synthesize-direction` task may add typed relations (extends / supersedes / method-of / contrasts) and `cluster` assignments. Own-library only to start (no beyond-library / OpenAlex edges). Nodes join the rest of the suite by `citekey` = the Better BibTeX id. Steward can render a Markdown projection; Obsidian enhancements are optional. Direct Provenance ingestion is a Public Alpha release gap. Additive contract — supersedes nothing. See specs/literature-reading.md §3.",
+  "type": "object",
+  "required": ["schema_version", "direction", "nodes", "edges"],
+  "properties": {
+    "schema_version": { "const": "lineage-graph/1.0" },
+    "generated_by": { "type": "string", "description": "Producer tag, e.g. \"steward lineage\" for the deterministic citation-graph pass." },
+    "direction": {
+      "type": "object",
+      "description": "The research direction this graph scopes.",
+      "required": ["query", "scope_method", "created"],
+      "properties": {
+        "query": { "type": "string", "description": "The question / topic that scoped the papers (passed in; may be empty for an ad-hoc paper set)." },
+        "scope_method": { "type": "string", "description": "How the papers were scoped, e.g. \"own-library citation match\" for the deterministic Steward pass." },
+        "created": { "type": "string", "description": "ISO 8601 date or date-time when the graph was produced." }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "description": "The papers in this direction. Each node is a paper keyed by its Better BibTeX citekey.",
+      "items": {
+        "type": "object",
+        "required": ["citekey"],
+        "properties": {
+          "citekey": { "type": "string", "description": "Better BibTeX citekey — the universal join id across the suite." },
+          "title": { "type": "string" },
+          "year": { "type": "string" },
+          "cluster": { "type": "string", "description": "Id of the cluster (see clusters[].id) this node belongs to. OPTIONAL — assigned by the agent during synthesis, not the deterministic pass." }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "description": "Directed relationships between papers. The deterministic builder emits relation=\"cites\"; the agent enriches the typed relations during synthesis.",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "relation"],
+        "properties": {
+          "from": { "type": "string", "description": "Source paper citekey." },
+          "to": { "type": "string", "description": "Target paper citekey." },
+          "relation": {
+            "type": "string",
+            "enum": ["cites", "extends", "supersedes", "method-of", "contrasts"],
+            "description": "Relationship type. \"cites\" is the deterministic default; the others are agent-typed during synthesis."
+          },
+          "evidence": { "type": "string", "description": "What grounds this edge. For relation=\"cites\" this is the matched reference's raw string from the citing paper's parsed-paper (anti-fabrication: the edge is read off real reference data, never invented)." }
+        }
+      }
+    },
+    "clusters": {
+      "type": "array",
+      "description": "Optional groupings of nodes into sub-directions / themes. Assigned by the agent during synthesis, not the deterministic pass.",
+      "items": {
+        "type": "object",
+        "required": ["id", "label"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" }
+        }
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "description": "Citekeys in year order — a chronological reading path through the direction.",
+      "items": { "type": "string" }
+    }
+  }
+}

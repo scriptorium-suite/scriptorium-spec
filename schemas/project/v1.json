@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/project/v1.json",
+  "title": "Scriptorium Project Record v1",
+  "description": "One research project in the user-owned Markdown workspace. The reference adapter materializes it as Projects/<project_id>.md whose YAML frontmatter conforms to this schema; the body remains human-authored Markdown plus the separately owned append-only progress-log region. Obsidian is an optional editor. Provenance ingests supported frontmatter for portfolio and context retrieval without becoming the owner of the source file.",
+  "type": "object",
+  "required": ["schema_version", "project_id", "title", "status"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^project/1\\.[0-9]+$" },
+    "project_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Stable kebab-case id; should match the repo dir name when there is one."
+    },
+    "title": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "active", "paused", "done", "archived"]
+    },
+    "stage": {
+      "type": "string",
+      "description": "Free-text current phase, e.g. 调研 / 数据 / 建模 / 写作 / 投稿修改."
+    },
+    "priority": { "type": "string", "enum": ["high", "medium", "low"] },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Concrete next steps; the portfolio dashboard surfaces these."
+    },
+    "blocked_by": { "type": "string", "description": "What blocks progress, empty if none." },
+    "linked_literature": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Steward item keys or collection paths (the literature this project draws on)."
+    },
+    "linked_repo": {
+      "type": "string",
+      "description": "Absolute local path used to resolve agent sessions to this project; normally the project's code repo, or the Markdown workspace when no separate repo is selected."
+    },
+    "linked_conversations": {
+      "type": "string",
+      "description": "Provenance attribution key (usually the repo dir name) so the hub can tie this project's AI sessions to it."
+    },
+    "updated": { "type": "string", "description": "ISO date of last update." }
+  }
+}

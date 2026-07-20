@@ -1,0 +1,23 @@
+{
+ "schema_version": "library-kb/1.0",
+ "generated_by": "steward 0.1.0",
+ "library": { "type": "user", "id": "0000000" },
+ "items": [
+  {
+   "key": "DEMO0003",
+   "title": "[SYNTHETIC] Robust XQ-17 Calibration Under Simulated Noise",
+   "authors": ["Example Author A", "Example Author B"],
+   "year": "2100",
+   "doi": "10.0000/scriptorium-demo-xq17-003",
+   "itemType": "journalArticle",
+   "folders": ["Demo Library/Synthetic Calibration"],
+   "tags": ["ai:synthetic-demo", "ai:xq17", "Demo"],
+   "aiTags": ["synthetic-demo", "xq17"],
+   "tldr": "[SYNTHETIC] Generated fixture for a fictional calibration workflow.",
+   "readStatus": "To Read",
+   "abstract": "[SYNTHETIC] This record exists only to demonstrate the library contract.",
+   "pdfPaths": ["C:\\ScriptoriumDemo\\papers\\xq17-robust.synthetic.pdf"],
+   "dateAdded": "2099-12-31 00:00:00"
+  }
+ ]
+}

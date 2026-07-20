@@ -1,0 +1,15 @@
+{
+  "schema_version": "lineage-graph/1.0",
+  "direction": {
+    "query": "[SYNTHETIC] XQ-17 calibration methods in generated demo papers",
+    "scope_method": "own-library reference walk",
+    "created": "2026-06-22T11:00:00Z"
+  },
+  "nodes": [
+    { "citekey": "example2100Xq17Robust", "title": "[SYNTHETIC] Robust XQ-17 Calibration Under Simulated Noise", "year": "2100" },
+    { "citekey": "example2097Xq17Principles", "title": "[SYNTHETIC] Principles of the XQ-17 Crystal Sensor", "year": "2097" }
+  ],
+  "edges": [
+    { "from": "example2100Xq17Robust", "to": "example2097Xq17Principles", "relation": "inspired-by" }
+  ]
+}

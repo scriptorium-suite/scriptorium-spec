@@ -1,0 +1,47 @@
+name: Release preflight
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Proposed release tag (for example, v2.2.0)
+        required: true
+        type: string
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.16"
+          enable-cache: true
+
+      - name: Check finalized release facts
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: python tools/check_release_consistency.py --tag "$RELEASE_TAG"
+
+      - name: Structural validation (stdlib)
+        run: python -c "from pathlib import Path; import subprocess, sys; raise SystemExit(subprocess.call([sys.executable, 'tools/validate.py', *map(str, sorted(Path('examples').glob('*.json')))]))"
+
+      - name: Install locked dev/CI test dependencies
+        run: uv sync --locked
+
+      - name: Schema conformance + compatibility policy
+        run: uv run --locked pytest tests/ -q -p no:cacheprovider

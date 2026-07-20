@@ -1,0 +1,29 @@
+{
+ "schema_version": "proposal/1.0",
+ "generated_by": "synthetic mapping fixture",
+ "target_tree": [
+  "Demo Library/Inbox",
+  "Demo Library/Synthetic Calibration/Baselines",
+  "Demo Library/Synthetic Calibration/Drift Tests"
+ ],
+ "proposals": [
+  {
+    "key": "DEMO0001",
+    "title": "[SYNTHETIC] Baseline Calibration for XQ-17",
+    "targets": ["Demo Library/Synthetic Calibration/Baselines"],
+   "confidence": "high",
+   "needsReview": false,
+    "note": "[SYNTHETIC] Deterministic high-confidence demo routing.",
+    "currentCollections": ["Demo Library/Inbox"]
+  },
+  {
+    "key": "DEMO0002",
+    "title": "[SYNTHETIC] Drift Characterization in Generated XQ-17 Data",
+    "targets": ["Demo Library/Synthetic Calibration/Drift Tests"],
+   "confidence": "low",
+   "needsReview": true,
+    "note": "[SYNTHETIC] Keep human review enabled to demonstrate a low-confidence proposal.",
+    "currentCollections": ["Demo Library/Inbox"]
+  }
+ ]
+}

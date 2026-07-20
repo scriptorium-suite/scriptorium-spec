@@ -1,0 +1,11 @@
+{
+  "schema_version": "library-kb/1.0",
+  "generated_by": "steward 0.1.0",
+  "items": [
+    {
+      "key": "EW3THCY6",
+      "title": "Valid key but readStatus is out of enum",
+      "readStatus": "Skimming"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+ "schema_version": "project/1.0",
+ "project_id": "synthetic-xq17-calibration",
+ "title": "[SYNTHETIC] XQ-17 calibration demo",
+ "status": "active",
+ "stage": "synthetic validation",
+ "priority": "medium",
+ "next_actions": ["Validate the generated fixture", "Draft the synthetic method summary"],
+ "blocked_by": "",
+ "linked_literature": ["Demo Library/Synthetic Calibration"],
+ "linked_repo": "C:/ScriptoriumDemo/projects/synthetic-xq17-calibration",
+ "linked_conversations": "synthetic-xq17-calibration",
+ "updated": "2100-01-03"
+}

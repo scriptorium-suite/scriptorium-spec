@@ -1,0 +1,12 @@
+{
+ "schema_version": "handoff/1.0",
+ "key": "DEMO0003",
+ "title": "[SYNTHETIC] Robust XQ-17 Calibration Under Simulated Noise",
+ "authors": ["Example Author A", "Example Author B"],
+ "year": "2100",
+ "doi": "10.0000/scriptorium-demo-xq17-003",
+ "tldr": "[SYNTHETIC] A generated fixture demonstrates a robust calibration workflow for the fictional XQ-17 sensor.",
+ "abstract": "[SYNTHETIC] This abstract exists only to exercise the handoff contract and describes no real experiment or publication.",
+ "folders": ["Demo Library/Synthetic Calibration"],
+ "pdfFilename": "xq17-robust.synthetic.pdf"
+}

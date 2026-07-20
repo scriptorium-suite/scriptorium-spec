@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.venv/
+.coverage
+htmlcov/
+
+# Local configuration and credentials
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.token
+
+# Private research data and generated state
+*.pdf
+*.docx
+*.pptx
+*.bib
+*.ris
+*.rdf
+*.db
+*.sqlite
+*.sqlite3
+*.jsonl
+*.log
+.scriptorium/
+
+# Local agent state
+.agents/
+.codex/
+.claude/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

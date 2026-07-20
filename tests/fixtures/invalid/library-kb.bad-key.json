@@ -1,0 +1,10 @@
+{
+  "schema_version": "library-kb/1.0",
+  "generated_by": "steward 0.1.0",
+  "items": [
+    {
+      "key": "abc123",
+      "title": "Item with a key that does not match ^[A-Z0-9]{8}$"
+    }
+  ]
+}

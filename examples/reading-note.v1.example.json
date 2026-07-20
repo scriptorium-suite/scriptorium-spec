@@ -1,0 +1,35 @@
+{
+  "schema_version": "reading-note/1.0",
+  "id": "example2100Xq17Robust",
+  "zotero_key": "DEMO0003",
+  "doi": "10.0000/scriptorium-demo-xq17-003",
+  "read_status": "In Progress",
+  "created": "2100-01-02T10:30:00Z",
+  "generated_by": "read-paper synthetic fixture",
+  "stages": {
+    "glance": {
+      "tldr": "[SYNTHETIC] Generated fixture showing how a reading note summarizes a fictional XQ-17 calibration paper.",
+      "tags": ["synthetic-demo", "xq17", "calibration"],
+      "key_findings": [
+        "[SYNTHETIC] The generated fixture records a demo error of 0.12 synthetic units.",
+        "[SYNTHETIC] Simulated drift is represented by a fictional indicator.",
+        "[SYNTHETIC] A held-out generated split demonstrates validation metadata."
+      ]
+    },
+    "close_read": {
+      "question": "[SYNTHETIC] Can the demo workflow retain traceable calibration claims for generated XQ-17 rows?",
+      "method": "[SYNTHETIC] Deterministic transformation over a generated fixture with a held-out demo split.",
+      "data": "[SYNTHETIC] Forty generated rows measured only in fictional XQ-17 units.",
+      "results": "[SYNTHETIC] The fixture completes and records provenance; it makes no real-world performance claim.",
+      "figures": ["Synthetic Fig. 1 (generated values)", "Synthetic Fig. 2 (demo residuals)"]
+    }
+  },
+  "sources": {
+    "annotations": [
+      "DemoAnnotations/example2100Xq17Robust#highlight-calibration",
+      "DemoAnnotations/example2100Xq17Robust#note-validation-gate"
+    ],
+    "parsed_file": "_parsed/example2100Xq17Robust.synthetic.json",
+    "zotero_uri": "zotero://select/library/items/DEMO0003"
+  }
+}

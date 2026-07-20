@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/proposal/v1.json",
+  "title": "Scriptorium Reorganization Proposal v1",
+  "description": "An offline, human-reviewable, diff-able plan for bulk library reorganization. Produced by an LLM, an agent, or a human (all three are equivalent producers); executed by Steward `apply` only after review. This file IS the audit artifact.",
+  "type": "object",
+  "required": ["schema_version", "proposals"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^proposal/1\\.[0-9]+$"
+    },
+    "generated_by": { "type": "string" },
+    "target_tree": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Complete list of valid target collection paths. When present, every proposal target MUST be in this list (apply validates)."
+    },
+    "proposals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "targets"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[A-Z0-9]{8}$",
+            "description": "Zotero item key."
+          },
+          "title": {
+            "type": "string",
+            "description": "Item title echoed for human review and reconciliation; apply matches by key only."
+          },
+          "targets": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1,
+            "maxItems": 3,
+            "description": "Target collection paths. First entry is the primary home; the rest are secondary memberships."
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "Producer's confidence. Low-confidence entries SHOULD be re-reviewed by a human before apply."
+          },
+          "needsReview": {
+            "type": "boolean",
+            "description": "Explicit flag: a human must look at this entry before apply."
+          },
+          "note": {
+            "type": "string",
+            "description": "Producer's reasoning, especially for low confidence or adjudicated entries."
+          },
+          "currentCollections": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Collection paths at proposal time (for review context and drift detection)."
+          }
+        }
+      }
+    }
+  }
+}
