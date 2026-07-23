@@ -1,12 +1,13 @@
 # Literature-Reading Expansion — Design `[P1–P3-core + P4-core ratified & built · P3+/P4-tail remaining]`
 
-> **Status (2026-06-22):** architecture approved; **P1–P3-core + P4-core ratified & built.**
+> **Status (amended 2026-07-23):** architecture approved; **P1–P3-core + P4-core ratified & built.**
 > The contracts sketched here are now ratified additive schemas under `schemas/`
 > (`reading-note/1.0`, `parsed-paper/1.0`, `lineage-graph/1.0`, `review/1.0`), with
 > the Steward CLI (`parse`, `lineage`, `lineage-render`) + skills (`read-paper`,
 > `synthesize-direction`) shipped. **Remaining:** P3+ local-embedding recall, P4 tail
-> (OpenAlex beyond-library 谱系), direct Provenance ingestion of parsed/reading/review/
-> lineage artifacts, and canonical Codex/Claude Code task installers. The current
+> (OpenAlex beyond-library 谱系), parsed-section full-text/semantic indexing, and
+> canonical Codex/Claude Code task installers. Provenance now locally ingests validated
+> parsed/reading/review/lineage artifacts as reference-only research context. The current
 > skill files are usable from their existing host-specific location; host parity is
 > a Public Alpha release gap. This EXTENDS
 > the literature flow (Steward `library-kb` + `review`, see
@@ -32,8 +33,8 @@ or other host sends the task context under that host's provider settings.
 |---|---|---|
 | **Read rail — local Zotero MCP** (`zotero-mcp`, read-only, local API/no-key, semantic search local-or-off) | the agent's live window into the library (metadata / full-text / annotations / notes); complements Steward's batch `library-kb` | adopt (plugin) + a registration note |
 | **Human reading — PDF++** (optional Obsidian integration) | in-vault PDF read + **markdown** annotations (survive the plugin; file-contract-clean) | optional adopted plugin |
-| **Parse layer — GROBID** (optional richer local parser later) | PDF → structured files (sections + reference list), **local** | **Steward** (`parse`) — emits contract files; direct Provenance ingestion is not implemented |
-| **Index — current + target** | current Provenance FTS5 indexes `library-kb`; parsed sections and optional local embeddings are the P3+ target | **Provenance** — parsed/reading/review/lineage ingestion and embeddings remain release gaps |
+| **Parse layer — GROBID** (optional richer local parser later) | PDF → structured files (sections + reference list), **local** | **Steward** (`parse`) emits contract files; Provenance locally ingests validated files as reference-only research artifacts |
+| **Index — current + target** | current Provenance indexes library/project/session data and imports parsed/reading/review/lineage records; parsed-section full-text and optional local embeddings are the P3+ target | **Provenance** — contract ingestion is implemented; richer parsed-section/semantic recall remains a release gap |
 | **Generation = the agent, in-session** (NO LLM client in suite code) | Codex or Claude Code writes the reading/synthesis prose; cloud egress, if any, belongs to the selected host | current host-specific tasks; the current thin entry does not yet package canonical two-host literature-task installers |
 | **Lineage — own-library** (GROBID reference edges → typed relations → graph file) | the direction 脉络 / lineage | **Steward** (`lineage`) |
 | **Agent hosts — Codex / Claude Code** | drive staged reading + synthesis over the same files and public tools | both are first-class targets; installer parity remains a release gap |
@@ -137,16 +138,17 @@ edge list, so they never disagree.
 - **`synthesize-direction` skill** — input a question/topic; the agent scopes papers
   (MCP search + `library-kb`; optional local-embedding recall after P3+),
   retrieve→rank (PaperQA2 shape),
-  and builds the contract outputs. Direct Provenance archival of review/lineage files
-  is not implemented. *[current host-specific task]*
+  and builds the contract outputs. Provenance locally ingests validated review/lineage
+  files as reference-only research artifacts. *[current host-specific task]*
 - **`steward parse`** — PDF → structured file through the local GROBID backend and
   a pluggable parser seam; Docling/MinerU backends are not bundled. *[Steward CLI]*
 - **`steward lineage`** — build a `lineage-graph` from parsed reference lists (own-library). *[Steward CLI]*
 - **`steward lineage-render`** — deterministically project a `lineage-graph/1.0` into the self-contained `Reviews/<slug>.lineage.md` (native-Obsidian Mermaid + timeline + Dataview edge table); `--stamp-notes` opportunistically writes Breadcrumbs frontmatter onto already-materialized paper notes (merge-not-clobber). *[Steward CLI]*
 - **`steward read-render`** — deterministically project a `reading-note/1.0` into a browsable, self-contained Obsidian note `reading-notes/<citekey>.md` (YAML frontmatter + a `## ` section per FILLED stage — 速览/精读/深读/串联定位 — + situate `lineage_refs` as `[[citekey]]` wikilinks + a `## 标注 · Annotations` section — highlight text inlines as a blockquote, a URI/path reference as a link — + a links block); a `close_read.figures[]` image path inlines as an Obsidian embed `![[path]]` (caption text otherwise — render-support only: actual figure images need a layout parser that emits image files, e.g. local MinerU; GROBID/parsed-paper carry caption text only). Optional `--kb` enriches the frontmatter with title/authors/year from `library-kb/1.x` (reading-note carries none). The `.json` stays the machine SSoT; the `.md` is re-rendered idempotently. The `[[citekey]]` library link resolves because `steward export` writes a `citekey` alias onto each `Literature/` note (from the item's `Citation Key:` extra-field line → the optional `citekey` introduced in `library-kb/1.1`; historical 1.0 snapshots remain readable). *[Steward CLI]*
 - **`steward read-index`** — scan a vault's `reading-notes/*.json` and emit one overview note `reading-notes/_index.md` (the reading status dashboard): status-grouped wikilink sections (To Read / In Progress / Read / Not Reading / no-status), a full table (citekey · title · year · status · stages · tags), and a Dataview block (static views serve non-plugin users). Deterministic, idempotent overwrite of `_index.md` only; the per-paper `.json` files stay the SSoT. *[Steward CLI]*
-- **Index** — current FTS5 covers `library-kb`; parsed-section indexing and optional
-  SentenceTransformers embeddings are planned P3+ work. *[Provenance release gap]*
+- **Index** — current local ingestion covers the four research-artifact contracts;
+  parsed-section full-text indexing and optional SentenceTransformers embeddings are
+  planned P3+ work. *[Provenance release gap]*
 - **Provider boundary** — the selected agent host owns generation egress; optional
   local retrieval models, when implemented, stay on-device. *[shared contract]*
 
@@ -166,7 +168,8 @@ edge list, so they never disagree.
 5. **Lineage** — GROBID reference edges among the scoped papers → typed relations → `lineage-graph/1.0`.
 6. **Synthesize** — outline → draft → critique (AutoSurvey shape) → `review/1.0` (narrative + comparison table), anti-fabrication.
 7. **Land** — write review + lineage contract files and optional Markdown/Obsidian
-   projections; link reading notes. Direct Provenance ingestion remains a release gap.
+   projections; link reading notes; optionally ingest the validated contract files into
+   Provenance as reference-only research context.
 
 ## 6. R17 revisit + trust-model impact
 - **Local embeddings are allowed but not shipped.** The P3+ target may use an optional
@@ -190,10 +193,11 @@ edge list, so they never disagree.
 - **P4-core · lineage render** ✅ *(shipped 2026-06-22)* — deterministic `steward lineage-render` projects an (agent-enriched) `lineage-graph/1.0` into a self-contained, tool-owned `Reviews/<slug>.lineage.md`: a **native-Obsidian Mermaid** graph (zero plugin), a year-ordered timeline, and a Dataview edge table. Breadcrumbs/ExcaliBrain per-note frontmatter is the **opportunistic** enhancement (`--stamp-notes`, written only onto already-materialized paper notes). *(Render is a projection of the existing `lineage-graph/1.0`, not a new contract — see §3 "Lineage render".)*
 - **P4 (tail) · beyond-library 谱系** — (later, optional) OpenAlex for lineage edges beyond your own library.
 
-## 8. Resolved design targets and current gaps (2026-07-15)
-1. **Index home target = Provenance.** Current FTS5 covers library metadata. Parsed
-   sections, reading notes, reviews, lineage graphs, and optional embeddings are not yet
-   ingested; each remains a Public Alpha release gap.
+## 8. Resolved design targets and current gaps (2026-07-23)
+1. **Index home = Provenance.** Validated parsed-paper, reading-note, review, and
+   lineage-graph files are now ingested as reference-only research artifacts. Rich
+   parsed-section full-text indexing and optional embeddings remain Public Alpha gaps;
+   ingestion never promotes these artifacts into approved claims.
 2. **Task home migration.** The current implementations live in Steward's
    host-specific `.claude/skills/` directory. Canonical task content and both Codex/
    Claude Code literature-task installers are not yet packaged by the current umbrella entry; host folders become

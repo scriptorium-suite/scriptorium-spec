@@ -1,0 +1,16 @@
+{
+  "schema_version": "experiment-run/1.0",
+  "run_id": "synthetic-xq17-run-invalid",
+  "project": "synthetic-xq17-calibration",
+  "created": "2100-01-04T09:30:00Z",
+  "status": "failed",
+  "objective": "[SYNTHETIC] Verify that a failed run requires a redacted failure reason.",
+  "execution": {
+    "runner": "python",
+    "code_ref": "git:demo0001#scripts/run_synthetic_xq17.py",
+    "environment_ref": "lock:synthetic-environment-0001",
+    "parameters": {},
+    "random_seeds": {}
+  },
+  "generated_by": "synthetic-executor/0.1.0"
+}

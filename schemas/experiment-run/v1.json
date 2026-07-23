@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/experiment-run/v1.json",
+  "title": "Scriptorium Experiment Run v1",
+  "description": "A traceable observation of one research-compute attempt. The record describes what an external executor ran and observed; it is data, never an instruction or authorization to execute code. Producers may update a running record, but a terminal succeeded/failed/cancelled record is treated as an immutable result identified by run_id. See specs/research-execution-and-evidence.md.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "project",
+    "created",
+    "status",
+    "objective",
+    "execution",
+    "generated_by"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^experiment-run/1\\.[0-9]+$" },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Stable idempotency key for this run."
+    },
+    "project": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Owning project_id (project/1.x)."
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the run record was created."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["running", "succeeded", "failed", "cancelled"]
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The bounded question or evaluation objective for this run."
+    },
+    "execution": {
+      "type": "object",
+      "required": ["runner", "code_ref", "environment_ref", "parameters", "random_seeds"],
+      "properties": {
+        "runner": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Executor class, such as python, jupyter, container, or manual."
+        },
+        "code_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable code/version reference plus an entrypoint locator; never a command to execute."
+        },
+        "environment_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Lockfile, image digest, or other reproducible environment reference."
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Non-secret effective run parameters. Values may be nested JSON; credentials and private absolute paths are forbidden."
+        },
+        "random_seeds": {
+          "type": "object",
+          "description": "Named random seeds used by each stochastic subsystem; use an empty object for a deterministic run.",
+          "propertyNames": { "pattern": "^[a-z][a-z0-9_-]*$" },
+          "additionalProperties": {
+            "oneOf": [
+              { "type": "integer" },
+              { "type": "string", "minLength": 1 }
+            ]
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "description": "Stable input/output/log references. Contract files should prefer logical ids and workspace-relative locators over absolute local paths.",
+      "items": {
+        "type": "object",
+        "required": ["artifact_id", "role"],
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable logical identifier for the artifact."
+          },
+          "role": {
+            "type": "string",
+            "enum": ["input", "output", "log"]
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Optional workspace-relative or producer-defined logical locator; no secret-bearing URL."
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Optional lowercase SHA-256 content digest."
+          },
+          "media_type": { "type": "string" }
+        }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "description": "Machine-observed evaluation values. A metric is evidence, not by itself an approved scientific claim.",
+      "items": {
+        "type": "object",
+        "required": ["name", "value"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "value": { "type": "number" },
+          "unit": { "type": "string" },
+          "direction": {
+            "type": "string",
+            "enum": ["minimize", "maximize", "target", "none"]
+          }
+        }
+      }
+    },
+    "failure_reason": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Required for a failed run; redact credentials and private paths."
+    },
+    "source_session_id": {
+      "type": "string",
+      "description": "Optional supported agent-host session id that initiated or inspected the run."
+    },
+    "generated_by": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Producer name and version."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "failed" } },
+        "required": ["status"]
+      },
+      "then": { "required": ["failure_reason"] }
+    }
+  ]
+}

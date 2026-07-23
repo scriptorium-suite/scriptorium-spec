@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Proposed release tag (for example, v2.2.0)
+        description: Proposed release tag (for example, v2.3.0)
         required: true
         type: string
   push:

@@ -1,0 +1,18 @@
+{
+  "schema_version": "experiment-run/1.0",
+  "run_id": "synthetic-xq17-run-bad-seed",
+  "project": "synthetic-xq17-calibration",
+  "created": "2100-01-04T09:30:00Z",
+  "status": "succeeded",
+  "objective": "[SYNTHETIC] Verify that named random seeds are integers or strings.",
+  "execution": {
+    "runner": "python",
+    "code_ref": "git:demo0001#scripts/run_synthetic_xq17.py",
+    "environment_ref": "lock:synthetic-environment-0001",
+    "parameters": {},
+    "random_seeds": {
+      "python": true
+    }
+  },
+  "generated_by": "synthetic-executor/0.1.0"
+}

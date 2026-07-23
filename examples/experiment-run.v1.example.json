@@ -1,0 +1,47 @@
+{
+  "schema_version": "experiment-run/1.0",
+  "run_id": "synthetic-xq17-run-0001",
+  "project": "synthetic-xq17-calibration",
+  "created": "2100-01-04T09:30:00Z",
+  "status": "succeeded",
+  "objective": "[SYNTHETIC] Exercise the experiment-run contract against generated XQ-17 rows.",
+  "execution": {
+    "runner": "python",
+    "code_ref": "git:demo0001#scripts/run_synthetic_xq17.py",
+    "environment_ref": "lock:synthetic-environment-0001",
+    "parameters": {
+      "generated_rows": 32,
+      "calibration_mode": "synthetic"
+    },
+    "random_seeds": {
+      "python": 1701,
+      "numpy": 1701
+    }
+  },
+  "artifacts": [
+    {
+      "artifact_id": "synthetic-xq17-input-0001",
+      "role": "input",
+      "locator": "fixtures/generated-xq17.csv",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "media_type": "text/csv"
+    },
+    {
+      "artifact_id": "synthetic-xq17-metrics-0001",
+      "role": "output",
+      "locator": "results/generated-xq17-metrics.json",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "media_type": "application/json"
+    }
+  ],
+  "metrics": [
+    {
+      "name": "synthetic-error",
+      "value": 0.125,
+      "unit": "generated-units",
+      "direction": "minimize"
+    }
+  ],
+  "source_session_id": "demo-session-0001",
+  "generated_by": "synthetic-executor/0.1.0"
+}

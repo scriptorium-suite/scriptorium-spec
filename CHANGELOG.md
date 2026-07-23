@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased
+
+Release candidate for **v2.3.0**.
+
+- Adds `experiment-run/1.0`, a minimal observation record for one external
+  research-compute attempt: stable run/project identity, objective, executor/code
+  and environment references, effective parameters, named random seeds, lifecycle
+  status, artifacts, metrics, and producer identity. The file is explicitly data,
+  never an execution instruction or authorization.
+- Adds `claim-evidence/1.0`, a reviewable claim with precise evidence links and
+  independent `epistemic_status` and `review_state` axes. Every explicit review
+  decision records `reviewed_at`; accepted claims require evidence and cannot remain
+  speculative; superseded claims retain history and identify their replacement.
+- Adds synthetic XQ-17 examples, negative fixtures, stdlib validator dispatch, and
+  JSON Schema conformance coverage for both formats.
+- Adds `specs/research-execution-and-evidence.md` and updates ownership/product
+  direction. External executors own run records; explicit human review owns claim
+  decisions; the thin entry neither executes code references nor approves claims.
+- This is not a restoration of the broad `experiment-log/1.0` removed in v2.0.0.
+  `project/1.x` remains unchanged and has no `experiments` field.
+- Records the implemented local Provenance ingestion of `parsed-paper/1.0`,
+  `reading-note/1.0`, `review/1.0`, and `lineage-graph/1.0`. Provenance ingestion
+  of the two new contracts remains a release gap.
+
 ## v2.2.0 — 2026-07-20
 
 - Replaces all public worked examples and domain-bearing invalid fixtures with a

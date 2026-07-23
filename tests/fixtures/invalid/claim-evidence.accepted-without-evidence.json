@@ -1,0 +1,13 @@
+{
+  "schema_version": "claim-evidence/1.0",
+  "claim_id": "synthetic-xq17-claim-invalid",
+  "project": "synthetic-xq17-calibration",
+  "created": "2100-01-04T10:00:00Z",
+  "statement": "[SYNTHETIC] An accepted claim cannot omit its evidence.",
+  "kind": "observation",
+  "epistemic_status": "supported",
+  "review_state": "accepted",
+  "evidence": [],
+  "reviewed_at": "2100-01-04T10:05:00Z",
+  "generated_by": "synthetic-review-workflow/0.1.0"
+}

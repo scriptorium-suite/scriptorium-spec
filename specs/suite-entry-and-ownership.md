@@ -2,6 +2,7 @@
 
 > Status: **Accepted**
 > Date: 2026-07-15
+> Amended: 2026-07-23 — records the external execution/evidence contract boundary
 > Scope: Scriptorium Public Alpha and later compatible releases
 
 ## Context
@@ -147,8 +148,11 @@ the remaining iterable to calculate an exact total.
 | Human-authored project prose, plans, and inbox notes | Markdown workspace | Provenance ingests them |
 | `project/1.x` frontmatter | the corresponding Markdown project file | approved sync operations MAY update only the contract fields they own |
 | Tool-owned progress-log marker region | host sync layer | append-only; human-authored regions are immutable to tools |
-| `parsed-paper/1.x` and deterministic `lineage-graph/1.x` | Steward-produced contract files | current Steward/agent file workflows consume them; direct Provenance ingestion is a release gap |
-| Reviewed `reading-note/1.x` and `review/1.x` | contract files produced by the agent workflow | Steward renders supported projections and agents read the files; direct Provenance ingestion is a release gap |
+| `parsed-paper/1.x` and deterministic `lineage-graph/1.x` | Steward-produced contract files | Steward/agent file workflows consume them; Provenance locally ingests them as reference-only research artifacts |
+| Reviewed `reading-note/1.x` and `review/1.x` | contract files produced by the agent workflow | Steward renders supported projections; agents read them; Provenance locally ingests them as reference-only research artifacts |
+| `experiment-run/1.x` | the external executor or agent workflow that observed the run | file-based agent workflows consume the record; Provenance ingestion is a release gap; no consumer may execute its code reference |
+| Draft `claim-evidence/1.x` | host review workflow | human review surface only; validation never promotes the draft |
+| Accepted/rejected/superseded `claim-evidence/1.x` | explicit human review workflow | file-based agent workflows consume the decision; Provenance ingestion is a release gap |
 | Agent-generated scaffold/fill or high-value claims before approval | draft owned by the host workflow | no authoritative consumer until approved |
 | Cross-session memory/index and protected sync state | Provenance | exposed through read-only MCP and derived views |
 | Raw browser/platform export | source-platform or local capture artifact | Provenance ingests and sanitizes it |
@@ -199,6 +203,9 @@ surface remains the files and schemas in this repository.
   neither host is preferred or treated as a second-class fallback.
 - **Literature profile:** Steward; Zotero is optional and becomes the literature
   master only when this profile is enabled.
+- **Research execution path:** an external Python, Jupyter, container, manual, or
+  domain executor MAY produce `experiment-run/1.x`; an agent/human review workflow
+  MAY link it through `claim-evidence/1.x`. These files do not authorize execution.
 - **Slides profile:** Lectern as an optional `handoff/1.x` consumer.
 - **Obsidian:** optional Markdown client.
 - **Browser extension:** optional capture front door; local agent logs and explicit
@@ -248,7 +255,7 @@ workspace, Provenance memory/search/MCP, Steward's contract-driven literature pa
 at least one installed Codex or Claude Code adapter (with both documented and
 equally supported), and one verified optional Steward-to-Lectern handoff.
 
-Public Alpha does not include a desktop shell, cloud/team sync, OpenAlex/RSS
+Public Alpha does not include a built-in compute sandbox, desktop shell, cloud/team sync, OpenAlex/RSS
 discovery, local vector embeddings, remote-control or third-party automation
 connectors, or a consumer-grade installer. Those
 capabilities require later decisions and must not be implied by the release surface.
@@ -260,7 +267,10 @@ trust boundaries above. The umbrella repository owns executable entry code,
 component manifests, workspace templates, demo fixtures, host installers, product
 documentation, screenshots, and cross-repository end-to-end CI.
 
-No new exchange schema is introduced by this ADR.
+The 2026-07-23 amendment records the ownership boundary for
+`experiment-run/1.0` and `claim-evidence/1.0`; their field-level definitions and
+lifecycle rules are authoritative in the schemas and
+`research-execution-and-evidence.md`.
 
 ## Consequences
 

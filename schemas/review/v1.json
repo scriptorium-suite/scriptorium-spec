@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/review/v1.json",
   "title": "Scriptorium Review v1",
-  "description": "A research-direction synthesis (narrative + comparison table) produced by the synthesize-direction agent task in answer to a question/topic. Outline -> draft -> critique narrative across `sections`, an optional paper-by-paper `comparison_table`, identified `gaps`, and `priority_reads`. Anti-fabrication: the comparison table and citations MUST be grounded in parsed-paper / library-kb, never invented by the model. It may reference a lineage-graph via `lineage_ref` and be materialized as Markdown. Direct Provenance ingestion is a Public Alpha release gap. Additive contract — supersedes nothing. See specs/literature-reading.md §3.",
+  "description": "A research-direction synthesis (narrative + comparison table) produced by the synthesize-direction agent task in answer to a question/topic. Outline -> draft -> critique narrative across `sections`, an optional paper-by-paper `comparison_table`, identified `gaps`, and `priority_reads`. Anti-fabrication: the comparison table and citations MUST be grounded in parsed-paper / library-kb, never invented by the model. It may reference a lineage-graph via `lineage_ref` and be materialized as Markdown. Provenance locally ingests validated files as reference-only research artifacts, not approved claims. Additive contract — supersedes nothing. See specs/literature-reading.md §3.",
   "type": "object",
   "required": ["schema_version", "direction", "sections"],
   "properties": {

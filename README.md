@@ -4,7 +4,7 @@ English | [中文](README.zh.md)
 
 > The shared data contracts that let the Scriptorium suite's tools exchange files.
 
-> **Product status: Public Alpha contract baseline.** The Public Alpha
+> **Product status: Public Alpha contract release candidate.** The Public Alpha
 > target is Windows-first and requires at least one agent host. Codex and Claude
 > Code are the two first-class target choices; canonical installers now exist, while
 > Claude Code live `SessionEnd` golden-path parity remains a release gap. The user's Markdown workspace,
@@ -51,13 +51,13 @@ The three suite tools (developed separately) are:
 The ownership ADR assigns Windows setup, diagnostics, the synthetic demo, and
 agent-task registration to the thin suite entrypoint; it does not become another
 data store. A local umbrella candidate now implements preview-first `init`, `doctor`,
-`status`, explicit-root metadata-only `inventory`, `demo`, `pull`, canonical host
-installers, and Windows CI. Adapter-specific reviewed migration execution, a
-published installer/package, and external beta evidence remain gaps.
+`status`, explicit-root metadata-only `inventory`, reviewed Markdown/PDF migration,
+`demo`, `pull`, canonical host installers, and Windows CI. A published
+installer/package, live-host acceptance, and external beta evidence remain gaps.
 
 ## Features
 
-- **Ten exchange formats**, each a JSON Schema (Draft 2020-12):
+- **Twelve exchange formats**, each a JSON Schema (Draft 2020-12):
 
   | Format | Schema | Produced by | Consumed by |
   |---|---|---|---|
@@ -67,17 +67,20 @@ published installer/package, and external beta evidence remain gaps.
   | `project/1.x` | [schemas/project/v1.json](schemas/project/v1.json) | human / agent / Markdown-frontmatter adapter | Provenance portfolio/context, optional dashboards |
   | `note/1.x` | [schemas/note/v1.json](schemas/note/v1.json) | host sync layer or optional capture adapter | Provenance protected ingest/search |
   | `session-summary/1.x` | [schemas/session-summary/v1.json](schemas/session-summary/v1.json) | Codex / Claude Code host workflow | Provenance approval flow, project progress-log |
-  | `reading-note/1.x` | [schemas/reading-note/v1.json](schemas/reading-note/v1.json) | `read-paper` agent task | Steward renderers and file-based agent workflows; Provenance ingest is a release gap |
-  | `parsed-paper/1.x` | [schemas/parsed-paper/v1.json](schemas/parsed-paper/v1.json) | Steward `parse` (local GROBID) | `read-paper`, synthesis, Steward lineage |
-  | `lineage-graph/1.x` | [schemas/lineage-graph/v1.json](schemas/lineage-graph/v1.json) | Steward `lineage` + agent typing | Steward renderer and file-based agent workflows; Provenance ingest is a release gap |
-  | `review/1.x` | [schemas/review/v1.json](schemas/review/v1.json) | `synthesize-direction` agent task | Markdown/file output and agent workflows; Provenance ingest is a release gap |
+  | `reading-note/1.x` | [schemas/reading-note/v1.json](schemas/reading-note/v1.json) | `read-paper` agent task | Steward renderers, file-based agent workflows, Provenance |
+  | `parsed-paper/1.x` | [schemas/parsed-paper/v1.json](schemas/parsed-paper/v1.json) | Steward `parse` (local GROBID) | `read-paper`, synthesis, Steward lineage, Provenance |
+  | `lineage-graph/1.x` | [schemas/lineage-graph/v1.json](schemas/lineage-graph/v1.json) | Steward `lineage` + agent typing | Steward renderer, file-based agent workflows, Provenance |
+  | `review/1.x` | [schemas/review/v1.json](schemas/review/v1.json) | `synthesize-direction` agent task | Markdown/file output, agent workflows, Provenance |
+  | `experiment-run/1.x` | [schemas/experiment-run/v1.json](schemas/experiment-run/v1.json) | external compute executor or agent workflow | file-based agent workflows; Provenance ingest is a release gap |
+  | `claim-evidence/1.x` | [schemas/claim-evidence/v1.json](schemas/claim-evidence/v1.json) | agent/human review workflow | human review and file-based agent workflows; Provenance ingest is a release gap |
 
 Lectern currently consumes `handoff/1.x`; it does **not** directly consume
-`library-kb/1.x`. Provenance currently ingests library/project/note/session data,
-but reading-note/review/lineage ingestion has not shipped and is intentionally
-listed above as a Public Alpha release gap.
+`library-kb/1.x`. Provenance currently ingests library/project/note/session data
+and the `parsed-paper`, `reading-note`, `review`, and `lineage-graph` research
+artifacts. Ingestion of the new experiment-run and claim-evidence contracts remains
+a release gap.
 
-- **Convention specs** for versioning, the Markdown project portfolio, optional Obsidian export/layout, config-root layout, the event/sync layer (`sync-layer.md`), product direction (`product-direction.md`), literature automation (`literature-automation.md`), suite entry/ownership, and the trust model (`trust-model.md`).
+- **Convention specs** for versioning, the Markdown project portfolio, optional Obsidian export/layout, config-root layout, the event/sync layer (`sync-layer.md`), product direction (`product-direction.md`), literature automation (`literature-automation.md`), research execution/evidence (`research-execution-and-evidence.md`), suite entry/ownership, and the trust model (`trust-model.md`).
 - **Worked examples** for every format under [`examples/`](examples), kept valid against the schemas.
   Every example and invalid test fixture belongs to a deliberately fictional XQ-17 demo universe.
   Names, papers, identifiers, paths, sessions, dates, and results do not describe real people or research.
@@ -127,7 +130,9 @@ scriptorium-spec/
 │   ├── reading-note/v1.json   # per-paper staged interpretation (4 optional reading levels)
 │   ├── parsed-paper/v1.json   # normalized local parse of a paper PDF (sections + refs + figures/tables)
 │   ├── lineage-graph/v1.json  # a research direction's citation 脉络 (nodes + typed edges)
-│   └── review/v1.json         # direction synthesis (narrative sections + comparison table)
+│   ├── review/v1.json         # direction synthesis (narrative sections + comparison table)
+│   ├── experiment-run/v1.json # observation of one external research-compute attempt
+│   └── claim-evidence/v1.json # reviewable claim with precise evidence links
 ├── examples/                 # valid examples per format, including compatibility variants
 ├── specs/                    # convention documents
 │   ├── versioning.md         # schema_version rules; ignore/preserve unknown fields
@@ -140,6 +145,7 @@ scriptorium-spec/
 │   ├── suite-entry-and-ownership.md # suite entrypoint + component boundaries
 │   ├── literature-automation.md # on-demand literature refresh (optional weekly opt-in) + digest
 │   ├── literature-reading.md # staged reading + direction synthesis
+│   ├── research-execution-and-evidence.md # external runs + human-gated claims
 │   └── trust-model.md        # suite safety/privacy guarantees by theme + honest limits
 ├── tools/
 │   └── validate.py           # minimal stdlib-only structural validator
@@ -156,15 +162,16 @@ the entrypoint ownership ADR defines that Public Alpha release boundary.
 
 ## Status
 
-**Public Alpha contract baseline: v2.2.0.** This baseline targets compatibility with
-Scriptorium v0.1.0; it does not claim that every component tag is already published.
-Cross-repository and Windows CI golden paths cover
-the `init`/`doctor`/`status`/`inventory`/`demo`/`pull` entry and canonical host
-installers, but adapter-specific reviewed migration execution, a packaged suite
-installer, and external beta evidence remain product gaps.
+**Public Alpha contract release candidate: v2.3.0.** This worktree adds the
+experiment-run and claim-evidence contracts; it does not claim that a corresponding
+tag or every component version is already published. Local cross-repository and
+Windows acceptance paths cover the `init`/`doctor`/`status`/`inventory`/reviewed
+migration/`demo`/`pull` entry, canonical host installers, and an install lifecycle,
+but fresh remote CI, live-host acceptance, a packaged suite installer, and external
+beta evidence remain product gaps.
 The event/sync-layer contracts (`note/1.0`, `session-summary/1.0`) are
-implemented in Provenance; Provenance ingestion of parsed-paper/reading-note/review/
-lineage is not yet implemented.
+implemented in Provenance, as is local ingestion of parsed-paper/reading-note/review/
+lineage. Provenance ingestion of experiment-run/claim-evidence is not yet implemented.
 
 ## License
 

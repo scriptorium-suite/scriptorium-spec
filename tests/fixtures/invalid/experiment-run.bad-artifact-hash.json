@@ -1,0 +1,23 @@
+{
+  "schema_version": "experiment-run/1.0",
+  "run_id": "synthetic-xq17-run-bad-hash",
+  "project": "synthetic-xq17-calibration",
+  "created": "2100-01-04T09:30:00Z",
+  "status": "succeeded",
+  "objective": "[SYNTHETIC] Verify that an artifact digest is a lowercase SHA-256 value.",
+  "execution": {
+    "runner": "python",
+    "code_ref": "git:demo0001#scripts/run_synthetic_xq17.py",
+    "environment_ref": "lock:synthetic-environment-0001",
+    "parameters": {},
+    "random_seeds": {}
+  },
+  "artifacts": [
+    {
+      "artifact_id": "synthetic-xq17-output-invalid",
+      "role": "output",
+      "sha256": "not-a-sha256"
+    }
+  ],
+  "generated_by": "synthetic-executor/0.1.0"
+}

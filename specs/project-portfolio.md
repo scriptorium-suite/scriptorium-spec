@@ -32,8 +32,9 @@ frontmatter updates and append-only progress-log region are governed by
 The current Provenance Markdown adapter uses the `Projects/*.md` convention. The
 thin suite entry now provides preview-first `scriptorium init` and explicit,
 no-clobber host installers. Its explicit-root `scriptorium inventory` reports only
-suffix-based aggregate routing candidates; automatic discovery and actual migration
-remain future work and MUST NOT be implied by initialization or inventory.
+suffix-based aggregate routing candidates; a separate reviewed migration plan/apply/
+verify/rollback flow handles selected Markdown/PDF sources. Initialization and
+inventory alone still MUST NOT imply or authorize migration.
 
 ## Frontmatter is the structured contract
 
@@ -75,6 +76,14 @@ workflow or contract may require either plugin.
 Generated dashboards are disposable projections. The individual project files,
 not a dashboard or Provenance index, remain the authoritative project records.
 
+## Research execution stays outside project frontmatter
+
+`experiment-run/1.0` and `claim-evidence/1.0` are separate JSON contract files
+governed by [research-execution-and-evidence.md](research-execution-and-evidence.md).
+They do not restore the removed `project.experiments` field and do not turn a
+project Markdown file into a run database. The external executor owns each run
+record; the explicit human review workflow owns each claim decision.
+
 ## Provenance integration
 
 - Provenance currently ingests supported `Projects/*.md` frontmatter and exposes
@@ -108,6 +117,7 @@ The intended working pattern is:
 4. Stage high-value project changes for approval; append only permitted timeline data.
 5. Review the optional portfolio view or query `get_portfolio()` across projects.
 
-The thin entry implements `init`, `doctor`, `status`, `inventory`, `demo`, `pull`,
-and canonical host-task installers. Adapter-specific reviewed migration execution and
-external beta evidence remain release gaps.
+The thin entry implements `init`, `doctor`, `status`, `inventory`, reviewed
+Markdown/PDF migration, `demo`, `pull`, and canonical host-task installers.
+Live-host acceptance, a published package, and external beta evidence remain
+release gaps.

@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/claim-evidence/v1.json",
+  "title": "Scriptorium Claim Evidence v1",
+  "description": "One reviewable research claim and its precise evidence links. epistemic_status describes what the current evidence indicates; review_state separately records human governance. A draft or rejected record never becomes an authoritative project fact merely because it validates. See specs/research-execution-and-evidence.md.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "claim_id",
+    "project",
+    "created",
+    "statement",
+    "epistemic_status",
+    "review_state",
+    "evidence",
+    "generated_by"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^claim-evidence/1\\.[0-9]+$" },
+    "claim_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Stable idempotency key for this claim record."
+    },
+    "project": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Owning project_id (project/1.x)."
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A bounded proposition that can be supported, qualified, or contradicted."
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["observation", "hypothesis", "interpretation", "limitation", "decision"]
+    },
+    "epistemic_status": {
+      "type": "string",
+      "enum": [
+        "speculative",
+        "partially-supported",
+        "supported",
+        "contradicted",
+        "mixed",
+        "unresolved"
+      ],
+      "description": "Evidence state, independent from review_state."
+    },
+    "review_state": {
+      "type": "string",
+      "enum": ["draft", "accepted", "rejected", "superseded"],
+      "description": "Human governance state. Only an explicit review workflow may set accepted/rejected/superseded."
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Precise links into source records. Accepted claims require at least one entry.",
+      "items": {
+        "type": "object",
+        "required": ["relation", "source_type", "source_id", "locator"],
+        "properties": {
+          "relation": {
+            "type": "string",
+            "enum": ["supports", "contradicts", "qualifies", "context"]
+          },
+          "source_type": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$",
+            "description": "Contract or source class, such as experiment-run, parsed-paper, reading-note, or artifact."
+          },
+          "source_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable id of the source record or artifact."
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Precise in-source location, such as a metric name, section id, page, figure, table, or paragraph."
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Optional lowercase SHA-256 digest of the referenced immutable artifact."
+          },
+          "note": {
+            "type": "string",
+            "description": "Short explanation of how the source bears on the claim; not a replacement for the source."
+          }
+        }
+      }
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Required for every explicit accepted, rejected, or superseded review decision."
+    },
+    "superseded_by": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Required when review_state is superseded."
+    },
+    "generated_by": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Producer name and version."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "review_state": {
+            "enum": ["accepted", "rejected", "superseded"]
+          }
+        },
+        "required": ["review_state"]
+      },
+      "then": { "required": ["reviewed_at"] }
+    },
+    {
+      "if": {
+        "properties": { "review_state": { "const": "accepted" } },
+        "required": ["review_state"]
+      },
+      "then": {
+        "properties": {
+          "epistemic_status": {
+            "enum": [
+              "partially-supported",
+              "supported",
+              "contradicted",
+              "mixed",
+              "unresolved"
+            ]
+          },
+          "evidence": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "review_state": { "const": "superseded" } },
+        "required": ["review_state"]
+      },
+      "then": { "required": ["superseded_by"] }
+    }
+  ]
+}

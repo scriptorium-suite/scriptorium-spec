@@ -1,0 +1,20 @@
+{
+  "schema_version": "claim-evidence/1.0",
+  "claim_id": "synthetic-xq17-claim-speculative",
+  "project": "synthetic-xq17-calibration",
+  "created": "2100-01-04T10:00:00Z",
+  "statement": "[SYNTHETIC] An accepted claim cannot remain speculative.",
+  "kind": "hypothesis",
+  "epistemic_status": "speculative",
+  "review_state": "accepted",
+  "evidence": [
+    {
+      "relation": "context",
+      "source_type": "experiment-run",
+      "source_id": "synthetic-xq17-run-0001",
+      "locator": "metrics[synthetic-error]"
+    }
+  ],
+  "reviewed_at": "2100-01-04T10:05:00Z",
+  "generated_by": "synthetic-review-workflow/0.1.0"
+}

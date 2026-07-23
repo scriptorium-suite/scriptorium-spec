@@ -1,0 +1,22 @@
+{
+  "schema_version": "claim-evidence/1.0",
+  "claim_id": "synthetic-xq17-claim-0001",
+  "project": "synthetic-xq17-calibration",
+  "created": "2100-01-04T10:00:00Z",
+  "statement": "[SYNTHETIC] The generated XQ-17 fixture produced a synthetic-error value of 0.125 in run 0001; this is not a real scientific result.",
+  "kind": "observation",
+  "epistemic_status": "supported",
+  "review_state": "accepted",
+  "evidence": [
+    {
+      "relation": "supports",
+      "source_type": "experiment-run",
+      "source_id": "synthetic-xq17-run-0001",
+      "locator": "metrics[synthetic-error]",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "note": "[SYNTHETIC] The metric is read from the generated output artifact."
+    }
+  ],
+  "reviewed_at": "2100-01-04T10:05:00Z",
+  "generated_by": "synthetic-review-workflow/0.1.0"
+}

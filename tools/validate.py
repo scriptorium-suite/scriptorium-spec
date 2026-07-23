@@ -244,6 +244,179 @@ def validate_review(doc, errors):
                         err(errors, rp, "cells must be an array")
 
 
+EXPERIMENT_RUN_STATUSES = {"running", "succeeded", "failed", "cancelled"}
+EXPERIMENT_ARTIFACT_ROLES = {"input", "output", "log"}
+METRIC_DIRECTIONS = {"minimize", "maximize", "target", "none"}
+CLAIM_KINDS = {"observation", "hypothesis", "interpretation", "limitation", "decision"}
+EPISTEMIC_STATUSES = {
+    "speculative",
+    "partially-supported",
+    "supported",
+    "contradicted",
+    "mixed",
+    "unresolved",
+}
+CLAIM_REVIEW_STATES = {"draft", "accepted", "rejected", "superseded"}
+EVIDENCE_RELATIONS = {"supports", "contradicts", "qualifies", "context"}
+SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
+SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+SOURCE_TYPE_RE = re.compile(r"^[a-z][a-z0-9-]*$")
+SEED_NAME_RE = re.compile(r"^[a-z][a-z0-9_-]*$")
+
+
+def validate_experiment_run(doc, errors):
+    for field in ("run_id", "project"):
+        value = doc.get(field)
+        if not isinstance(value, str) or not SLUG_RE.match(value):
+            err(errors, field, f"bad {field}: {value!r}")
+    if not isinstance(doc.get("created"), str) or not doc["created"]:
+        err(errors, "created", "missing or not a string")
+    if doc.get("status") not in EXPERIMENT_RUN_STATUSES:
+        err(errors, "status", f"invalid status: {doc.get('status')!r}")
+    if not isinstance(doc.get("objective"), str) or not doc["objective"]:
+        err(errors, "objective", "missing or not a string")
+
+    execution = doc.get("execution")
+    if not isinstance(execution, dict):
+        err(errors, "execution", "missing or not an object")
+    else:
+        runner = execution.get("runner")
+        if not isinstance(runner, str) or not SOURCE_TYPE_RE.match(runner):
+            err(errors, "execution.runner", f"invalid runner: {runner!r}")
+        if not isinstance(execution.get("code_ref"), str) or not execution["code_ref"]:
+            err(errors, "execution.code_ref", "missing or not a string")
+        if (
+            not isinstance(execution.get("environment_ref"), str)
+            or not execution["environment_ref"]
+        ):
+            err(errors, "execution.environment_ref", "missing or not a string")
+        if not isinstance(execution.get("parameters"), dict):
+            err(errors, "execution.parameters", "missing or not an object")
+        random_seeds = execution.get("random_seeds")
+        if not isinstance(random_seeds, dict):
+            err(errors, "execution.random_seeds", "missing or not an object")
+        else:
+            for name, seed in random_seeds.items():
+                path = f"execution.random_seeds.{name}"
+                if not isinstance(name, str) or not SEED_NAME_RE.match(name):
+                    err(errors, path, "seed name must be lowercase")
+                if (
+                    not isinstance(seed, (int, str))
+                    or isinstance(seed, bool)
+                    or (isinstance(seed, str) and not seed)
+                ):
+                    err(errors, path, "seed must be an integer or non-empty string")
+
+    artifacts = doc.get("artifacts")
+    if artifacts is not None:
+        if not isinstance(artifacts, list):
+            err(errors, "artifacts", "must be an array")
+        else:
+            for i, artifact in enumerate(artifacts):
+                path = f"artifacts[{i}]"
+                if not isinstance(artifact, dict):
+                    err(errors, path, "must be an object")
+                    continue
+                if not isinstance(artifact.get("artifact_id"), str) or not artifact["artifact_id"]:
+                    err(errors, path, "missing artifact_id")
+                if artifact.get("role") not in EXPERIMENT_ARTIFACT_ROLES:
+                    err(errors, path, f"invalid role: {artifact.get('role')!r}")
+                digest = artifact.get("sha256")
+                if digest is not None and (
+                    not isinstance(digest, str) or not SHA256_RE.match(digest)
+                ):
+                    err(errors, f"{path}.sha256", "must be a lowercase SHA-256 digest")
+
+    metrics = doc.get("metrics")
+    if metrics is not None:
+        if not isinstance(metrics, list):
+            err(errors, "metrics", "must be an array")
+        else:
+            for i, metric in enumerate(metrics):
+                path = f"metrics[{i}]"
+                if not isinstance(metric, dict):
+                    err(errors, path, "must be an object")
+                    continue
+                if not isinstance(metric.get("name"), str) or not metric["name"]:
+                    err(errors, path, "missing name")
+                value = metric.get("value")
+                if not isinstance(value, (int, float)) or isinstance(value, bool):
+                    err(errors, path, f"value must be a number: {value!r}")
+                direction = metric.get("direction")
+                if direction is not None and direction not in METRIC_DIRECTIONS:
+                    err(errors, path, f"invalid direction: {direction!r}")
+
+    if doc.get("status") == "failed" and (
+        not isinstance(doc.get("failure_reason"), str) or not doc["failure_reason"]
+    ):
+        err(errors, "failure_reason", "required for failed status")
+    if not isinstance(doc.get("generated_by"), str) or not doc["generated_by"]:
+        err(errors, "generated_by", "missing or not a string")
+
+
+def validate_claim_evidence(doc, errors):
+    for field in ("claim_id", "project"):
+        value = doc.get(field)
+        if not isinstance(value, str) or not SLUG_RE.match(value):
+            err(errors, field, f"bad {field}: {value!r}")
+    if not isinstance(doc.get("created"), str) or not doc["created"]:
+        err(errors, "created", "missing or not a string")
+    if not isinstance(doc.get("statement"), str) or not doc["statement"]:
+        err(errors, "statement", "missing or not a string")
+    kind = doc.get("kind")
+    if kind is not None and kind not in CLAIM_KINDS:
+        err(errors, "kind", f"invalid kind: {kind!r}")
+    if doc.get("epistemic_status") not in EPISTEMIC_STATUSES:
+        err(
+            errors,
+            "epistemic_status",
+            f"invalid epistemic_status: {doc.get('epistemic_status')!r}",
+        )
+    review_state = doc.get("review_state")
+    if review_state not in CLAIM_REVIEW_STATES:
+        err(errors, "review_state", f"invalid review_state: {review_state!r}")
+
+    evidence = doc.get("evidence")
+    if not isinstance(evidence, list):
+        err(errors, "evidence", "missing or not an array")
+        evidence = []
+    else:
+        for i, item in enumerate(evidence):
+            path = f"evidence[{i}]"
+            if not isinstance(item, dict):
+                err(errors, path, "must be an object")
+                continue
+            if item.get("relation") not in EVIDENCE_RELATIONS:
+                err(errors, path, f"invalid relation: {item.get('relation')!r}")
+            source_type = item.get("source_type")
+            if not isinstance(source_type, str) or not SOURCE_TYPE_RE.match(source_type):
+                err(errors, path, f"invalid source_type: {source_type!r}")
+            for field in ("source_id", "locator"):
+                if not isinstance(item.get(field), str) or not item[field]:
+                    err(errors, path, f"missing {field}")
+            digest = item.get("sha256")
+            if digest is not None and (
+                not isinstance(digest, str) or not SHA256_RE.match(digest)
+            ):
+                err(errors, f"{path}.sha256", "must be a lowercase SHA-256 digest")
+
+    if review_state in {"accepted", "rejected", "superseded"} and (
+        not isinstance(doc.get("reviewed_at"), str) or not doc["reviewed_at"]
+    ):
+        err(errors, "reviewed_at", "required for an explicit review decision")
+    if review_state == "accepted":
+        if not evidence:
+            err(errors, "evidence", "accepted claims require at least one evidence link")
+        if doc.get("epistemic_status") == "speculative":
+            err(errors, "epistemic_status", "accepted claims cannot remain speculative")
+    if review_state == "superseded":
+        superseded_by = doc.get("superseded_by")
+        if not isinstance(superseded_by, str) or not SLUG_RE.match(superseded_by):
+            err(errors, "superseded_by", "required for superseded review_state")
+    if not isinstance(doc.get("generated_by"), str) or not doc["generated_by"]:
+        err(errors, "generated_by", "missing or not a string")
+
+
 FORMATS = {
     "library-kb": validate_library_kb,
     "proposal": validate_proposal,
@@ -255,6 +428,8 @@ FORMATS = {
     "parsed-paper": validate_parsed_paper,
     "lineage-graph": validate_lineage_graph,
     "review": validate_review,
+    "experiment-run": validate_experiment_run,
+    "claim-evidence": validate_claim_evidence,
 }
 
 

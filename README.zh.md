@@ -4,7 +4,7 @@
 
 > 让 Scriptorium 套件各工具彼此交换文件的共享数据契约。
 
-> **产品状态：Public Alpha 契约基线。** Public Alpha 目标以 Windows
+> **产品状态：Public Alpha 契约发布候选。** Public Alpha 目标以 Windows
 > 为首发平台，并要求至少选择一个 agent 宿主；Codex 与 Claude Code 是地位相同的一等
 > 目标宿主；canonical installer 已实现，但 Claude Code 的 live `SessionEnd` golden
 > path 对等验证仍是 release gap。用户的
@@ -48,13 +48,13 @@ JSON Schema、约定文档、可用示例以及一个
 
 所有权 ADR 将 Windows 配置、诊断、合成 demo 与 agent task 注册归于薄套件入口；
 该入口本身不成为新的数据存储。本地 umbrella 候选版现已实现默认预览的 `init`、
-`doctor`、`status`、仅盘点显式来源和元数据的 `inventory`、`demo`、`pull`、
-canonical host installer 与 Windows CI；适配器级的人审迁移执行、正式发布的安装包
-以及外部 beta 证据仍是 release gap。
+`doctor`、`status`、仅盘点显式来源和元数据的 `inventory`、经人审的 Markdown/PDF
+迁移、`demo`、`pull`、canonical host installer 与 Windows CI；正式发布的安装包、
+真实宿主验收以及外部 beta 证据仍是 release gap。
 
 ## 特性
 
-- **十种交换格式**，每种都是一份 JSON Schema（Draft 2020-12）：
+- **十二种交换格式**，每种都是一份 JSON Schema（Draft 2020-12）：
 
   | 格式 | Schema | 生产者 | 消费者 |
   |---|---|---|---|
@@ -64,16 +64,19 @@ canonical host installer 与 Windows CI；适配器级的人审迁移执行、�
   | `project/1.x` | [schemas/project/v1.json](schemas/project/v1.json) | 人工 / agent / Markdown frontmatter 适配器 | Provenance 项目组合/上下文、可选看板 |
   | `note/1.x` | [schemas/note/v1.json](schemas/note/v1.json) | 宿主同步层或可选捕获适配器 | Provenance 受保护摄取/搜索 |
   | `session-summary/1.x` | [schemas/session-summary/v1.json](schemas/session-summary/v1.json) | Codex / Claude Code 宿主工作流 | Provenance 审批流、项目进展日志 |
-  | `reading-note/1.x` | [schemas/reading-note/v1.json](schemas/reading-note/v1.json) | `read-paper` agent task | Steward 渲染器与文件型 agent 工作流；Provenance 摄取仍是 release gap |
-  | `parsed-paper/1.x` | [schemas/parsed-paper/v1.json](schemas/parsed-paper/v1.json) | Steward `parse`（本地 GROBID） | `read-paper`、综述、Steward lineage |
-  | `lineage-graph/1.x` | [schemas/lineage-graph/v1.json](schemas/lineage-graph/v1.json) | Steward `lineage` + agent 标注关系类型 | Steward 渲染器与文件型 agent 工作流；Provenance 摄取仍是 release gap |
-  | `review/1.x` | [schemas/review/v1.json](schemas/review/v1.json) | `synthesize-direction` agent task | Markdown/文件输出与 agent 工作流；Provenance 摄取仍是 release gap |
+  | `reading-note/1.x` | [schemas/reading-note/v1.json](schemas/reading-note/v1.json) | `read-paper` agent task | Steward 渲染器、文件型 agent 工作流、Provenance |
+  | `parsed-paper/1.x` | [schemas/parsed-paper/v1.json](schemas/parsed-paper/v1.json) | Steward `parse`（本地 GROBID） | `read-paper`、综述、Steward lineage、Provenance |
+  | `lineage-graph/1.x` | [schemas/lineage-graph/v1.json](schemas/lineage-graph/v1.json) | Steward `lineage` + agent 标注关系类型 | Steward 渲染器、文件型 agent 工作流、Provenance |
+  | `review/1.x` | [schemas/review/v1.json](schemas/review/v1.json) | `synthesize-direction` agent task | Markdown/文件输出、agent 工作流、Provenance |
+  | `experiment-run/1.x` | [schemas/experiment-run/v1.json](schemas/experiment-run/v1.json) | 外部计算执行器或 agent 工作流 | 文件型 agent 工作流；Provenance 摄取仍是 release gap |
+  | `claim-evidence/1.x` | [schemas/claim-evidence/v1.json](schemas/claim-evidence/v1.json) | agent/人工审核工作流 | 人工审核与文件型 agent 工作流；Provenance 摄取仍是 release gap |
 
 Lectern 当前消费 `handoff/1.x`，**不会**直接消费 `library-kb/1.x`。Provenance 当前已实现
-文献库、项目、笔记和会话数据的摄取；reading-note/review/lineage 摄取尚未发布，因此在上表
-明确列为 Public Alpha release gap。
+文献库、项目、笔记和会话数据，以及 `parsed-paper`、`reading-note`、`review`、
+`lineage-graph` 研究工件的本地摄取；新增的 experiment-run/claim-evidence 摄取仍是
+Public Alpha release gap。
 
-- **约定文档**：覆盖版本号规则、Markdown 项目组合、可选 Obsidian 导出/布局、config-root、事件/同步层（`sync-layer.md`）、产品方向（`product-direction.md`）、文献自动化（`literature-automation.md`）、套件入口/所有权与信任模型（`trust-model.md`）。
+- **约定文档**：覆盖版本号规则、Markdown 项目组合、可选 Obsidian 导出/布局、config-root、事件/同步层（`sync-layer.md`）、产品方向（`product-direction.md`）、文献自动化（`literature-automation.md`）、研究执行与证据（`research-execution-and-evidence.md`）、套件入口/所有权与信任模型（`trust-model.md`）。
 - **可用示例**：[`examples/`](examples) 下每种格式都有示例，并保持与 schema 一致有效。
   所有示例和无效测试夹具均属于刻意虚构的 XQ-17 演示世界；其中的人名、论文、标识符、路径、
   会话、日期与结果均不描述任何真实人物或科研工作。
@@ -120,7 +123,9 @@ scriptorium-spec/
 │   ├── reading-note/v1.json   # 单篇论文分级解读（4 个可选阅读层级）
 │   ├── parsed-paper/v1.json   # 论文 PDF 的规范化本地解析（章节 + 参考文献 + 图表）
 │   ├── lineage-graph/v1.json  # 研究方向的引用脉络（节点 + 带类型的边）
-│   └── review/v1.json         # 方向综述（叙事章节 + 对比表）
+│   ├── review/v1.json         # 方向综述（叙事章节 + 对比表）
+│   ├── experiment-run/v1.json # 一次外部科研计算尝试的观察记录
+│   └── claim-evidence/v1.json # 可审核断言及其精确证据链接
 ├── examples/                 # 每种格式的有效示例，含兼容性版本变体
 ├── specs/                    # 约定文档
 │   ├── versioning.md         # schema_version 规则；忽略并保留未知字段
@@ -133,6 +138,7 @@ scriptorium-spec/
 │   ├── suite-entry-and-ownership.md # 套件入口与组件边界
 │   ├── literature-automation.md # 按需文献刷新（可选每周 opt-in）+ 库内新进展 digest
 │   ├── literature-reading.md # 分阶段阅读 + 方向脉络综述
+│   ├── research-execution-and-evidence.md # 外部实验记录 + 人审断言
 │   └── trust-model.md        # 套件安全/隐私保证（按主题）+ 诚实的边界说明
 ├── tools/
 │   └── validate.py           # 零依赖、仅标准库的结构校验器
@@ -148,13 +154,13 @@ Steward 的源码包名为 `scriptorium-steward`，CLI 为 `steward`。Provenanc
 
 ## 状态
 
-**Public Alpha 契约基线：v2.2.0。** 该基线以 Scriptorium v0.1.0 为兼容目标，
-不表示所有组件 tag 已经发布。跨仓与 Windows CI golden path 已覆盖
-`init`/`doctor`/`status`/`inventory`/`demo`/
-`pull` 入口及 canonical host installer，但适配器级的人审迁移执行、套件安装包与
+**Public Alpha 契约发布候选：v2.3.0。** 当前工作树新增 experiment-run 与
+claim-evidence 契约，不表示对应 tag 或所有组件版本已经发布。本地跨仓与 Windows
+验收路径已覆盖 `init`/`doctor`/`status`/`inventory`/经人审迁移/`demo`/`pull`、
+canonical host installer 与安装生命周期；全新远端 CI、真实宿主验收、套件安装包与
 外部 beta 证据仍是产品缺口。事件/同步层契约
-（`note/1.0`、`session-summary/1.0`）已在 Provenance 实现；parsed-paper/reading-note/
-review/lineage 摄取尚未实现。
+（`note/1.0`、`session-summary/1.0`）及 parsed-paper/reading-note/review/lineage
+本地摄取已在 Provenance 实现；experiment-run/claim-evidence 摄取尚未实现。
 
 ## License
 

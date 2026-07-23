@@ -1,8 +1,9 @@
 # Scriptorium 产品方向决议（Public Alpha 阶段宪法）
 
-> 状态：已确认 v2 · 2026-07-15 · 本文件是 Public Alpha 阶段所有细化工作的依据。
+> 状态：已确认 v3 · 2026-07-23 · 本文件是 Public Alpha 阶段所有细化工作的依据。
 > 演化（2026-06-22）：**R5「实时=自动·零手动」已换挡到「agent 原生·按需 pull」**——后台守护进程/无人值守摘要器全退役，改由用户/agent 在会话里按需驱动（可用的捕获钩子保留）。
 > 演化（2026-07-15）：目标从仅作者自用扩展为面向外部技术型研究者的 Public Alpha；采用薄入口、分域 master、Codex + Claude Code 双宿主、可选集成，并明确 Engram 不属于官方运行组件。
+> 演化（2026-07-23）：增加外部科研执行与断言证据层；`experiment-run/1.0` 只记录执行观察、绝不授权执行，`claim-evidence/1.0` 将证据状态与人工审核状态分离。
 > 角色约定：Codex 与 Claude Code 均为受支持的 agent 宿主；对话中文、代码/标识符英文。
 > 关联：[suite-entry-and-ownership.md](suite-entry-and-ownership.md)（入口、所有权与宿主 ADR）· [vault-layout.md](vault-layout.md)（Markdown workspace）· [trust-model.md](trust-model.md)（信任边界）。跨项目历史见 Provenance MCP。
 > 标记：`[已确认]` = 用户已拍板；`[草案]` = PM 拟、待用户增补/否决。
@@ -15,7 +16,7 @@
 - **R2 产品身份** `[已确认]` Scriptorium 是薄入口 + agent 宿主 + 可独立使用的组件集合：核心文件契约统一，运行时保持松耦合；完整 Public Alpha 必须选择 Codex、Claude Code 或同时选择二者，二者一等支持；文献、Obsidian 体验与出片按可选 capability profile 组合，不做单体应用。
 
 ## 2. 架构
-- **R3 分域 master** `[已确认]` 每类持久数据只有一个 master：Zotero（启用时）拥有文献源记录；Markdown 文件拥有人写项目事实与获批工件；host sync layer 拥有项目笔记中的自动 progress-log marker 区；Provenance 仅是权威的跨会话记忆/检索层；Steward 产出的契约文件和 Lectern 交付物各自保持文件级 master。薄入口不拥有业务数据。
+- **R3 分域 master** `[已确认]` 每类持久数据只有一个 master：Zotero（启用时）拥有文献源记录；Markdown 文件拥有人写项目事实与获批工件；host sync layer 拥有项目笔记中的自动 progress-log marker 区；外部计算执行器拥有原始执行输出及其 `experiment-run/1.x` 记录；显式人工审核工作流拥有 `claim-evidence/1.x` 的审核决定；Provenance 仅是权威的跨会话记忆/检索层；Steward 产出的契约文件和 Lectern 交付物各自保持文件级 master。薄入口不拥有业务数据。
 - **R4 工作台与边界** `[已确认]` plain Markdown workspace = 核心人机工作台；Obsidian 是可选客户端而非运行时依赖。workspace 按 master 分区：**人写区**（用户拥有，摄取进 Provenance）/ **工具派生区**（生成工具拥有，可重建）。每条信息单一 master、视图永远派生。
 - **R5 同步模型** `[已确认]` 捕获适配器可事件入队，处理统一为短生命周期、显式的 on-demand pull。Claude Code 可用 enqueue-only `SessionEnd` 钩子；Codex 可用本地日志扫描；两者在 pull 后进入同一 worker 与审批流。不得宣称所有宿主具有相同的自动钩子，也不做亚秒级常驻守护进程。
 
@@ -32,7 +33,8 @@
 - **R11 出片** `[已确认]` Lectern = 官方但可选的 Slides profile，通过 `handoff/1.x` 消费文件；核心套件不依赖它，**不纳入 PPT-Agent**。
 - **R12 可选集成** `[已确认]` Obsidian、Zotero、browser extension、Lectern、GROBID、Better BibTeX、PDF++、Dataview 均按能力 profile 启用；缺失时只降级对应能力，不得使 Public Alpha core 的其余能力失效。
 - **R13 文献进展摘要** `[已确认]` Steward 已提供库内 review/reading/lineage 的契约与确定性投影；Public Alpha 只承诺已有 Zotero/本地文献链。RSS、OpenAlex、微信公众号等外部发现源留待未来，且只能产出候选或可审核 proposal。
-- **R14 契约演进** `[已确认]` `note/1.0`、`session-summary/1.0` 与 Markdown workspace 所有权约定已经落地；未来格式变化继续采用版本化、加性演进，破坏性变化才提升 major。
+- **R14 契约演进** `[已确认]` `note/1.0`、`session-summary/1.0`、`experiment-run/1.0`、`claim-evidence/1.0` 与 Markdown workspace 所有权约定已经落地；未来格式变化继续采用版本化、加性演进，破坏性变化才提升 major。
+- **R19 研究执行与证据** `[已确认]` Python、Jupyter、容器、人工或领域软件等外部执行器负责实际运行与隔离；`experiment-run/1.x` 记录输入、代码/环境、有效参数、随机种子、状态、指标与产物哈希，是可追溯观察记录而非命令，成功指标也不会自动成为科研结论。agent 可生成 `claim-evidence/1.x` 草稿，但证据状态与审核状态必须分离，只有显式人工流程可以接受、拒绝或取代断言；入口、校验器和 Provenance 摄取都不得暗含执行或批准。
 
 ## 6. 执行
 - **R15 薄入口** `[已确认]` 当前 umbrella repo 只负责 `init`/`doctor`/`status`/`inventory`/`pull`/`demo`、组件兼容清单、workspace 模板与宿主安装器；`inventory` 仅盘点显式来源并给出不含路径的分类级审阅路由，不读取文件正文、不持久化清单，也不执行迁移。入口只能调用公开 CLI/MCP/契约文件，不得 import 组件内部模块或复制业务逻辑。
@@ -65,7 +67,7 @@
 注：可选外部提案源使用的暂存位置与权限由连接器自行声明，不属于 Public Alpha 核心布局。Dataview、Bases、PDF++ 或 AI 输入插件均不得成为基础验收条件。
 
 ## 9. 数据流（见架构图）
-Markdown 人写区与 capture adapters（Codex 扫描 / Claude Code enqueue / 可选 browser import）→ on-demand pull → 单 worker（混合审核、append-only）→ **Provenance 权威记忆/检索层** → MCP 回喂与派生视图。启用 Literature profile 时，Zotero → Steward → `library-kb`/reading/lineage 契约 → Provenance/Markdown；启用 Slides profile 时，Steward `handoff` → Lectern → 用户拥有的 `.pptx`。薄入口只编排，不进入数据面。
+Markdown 人写区与 capture adapters（Codex 扫描 / Claude Code enqueue / 可选 browser import）→ on-demand pull → 单 worker（混合审核、append-only）→ **Provenance 权威记忆/检索层** → MCP 回喂与派生视图。启用 Literature profile 时，Zotero → Steward → `library-kb`/reading/lineage 契约 → Provenance/Markdown；进行科研执行时，外部执行器 → `experiment-run` → agent 提议 `claim-evidence` 草稿 → 人工审核 → 后续记忆/交付；启用 Slides profile 时，Steward `handoff` → Lectern → 用户拥有的 `.pptx`。薄入口只编排，不进入数据面。
 
 ## 10. 下一步（按 R16）
 1. 在 Provenance MCP 之上增加项目级 context-capsule/resume 入口，并与不暴露内容的控制面 `status` 分开。
@@ -73,3 +75,4 @@ Markdown 人写区与 capture adapters（Codex 扫描 / Claude Code enqueue / �
 3. 建立 canonical schema 驱动的跨仓 E2E，补齐 Steward handoff→Lectern 交付链。
 4. 用干净 Windows 环境完成源码首装、配置回退、离线 demo 与真实项目路径验收。
 5. 以 CI、验收记录和截图为证据，统一 README、版本与 Public Alpha 发布说明。
+6. 在不引入内置执行器的前提下，为 `experiment-run/1.0` 与 `claim-evidence/1.0` 增加 Provenance 摄取、审批及合成跨仓 E2E。

@@ -1,0 +1,13 @@
+{
+  "schema_version": "claim-evidence/1.0",
+  "claim_id": "synthetic-xq17-claim-superseded-time",
+  "project": "synthetic-xq17-calibration",
+  "created": "2100-01-04T10:00:00Z",
+  "statement": "[SYNTHETIC] A superseded claim must retain its review timestamp.",
+  "kind": "interpretation",
+  "epistemic_status": "mixed",
+  "review_state": "superseded",
+  "evidence": [],
+  "superseded_by": "synthetic-xq17-claim-0001",
+  "generated_by": "synthetic-review-workflow/0.1.0"
+}

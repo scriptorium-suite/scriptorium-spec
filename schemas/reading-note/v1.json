@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/reading-note/v1.json",
   "title": "Scriptorium Reading Note v1",
-  "description": "A per-paper staged interpretation produced by the read-paper agent task as you read at the depth you need. The four OPTIONAL stages are glance / close_read / deep_read / situate, each filled on demand. Joined to the rest of the suite by `id` = the Better BibTeX citekey. Steward can render it to Markdown; Obsidian is an optional client. Direct Provenance ingestion is a Public Alpha release gap, not a shipped consumer. Additive contract — supersedes nothing. See specs/literature-reading.md §3.",
+  "description": "A per-paper staged interpretation produced by the read-paper agent task as you read at the depth you need. The four OPTIONAL stages are glance / close_read / deep_read / situate, each filled on demand. Joined to the rest of the suite by `id` = the Better BibTeX citekey. Steward can render it to Markdown; Obsidian is an optional client. Provenance locally ingests validated files as reference-only research artifacts, not approved claims. Additive contract — supersedes nothing. See specs/literature-reading.md §3.",
   "type": "object",
   "required": ["schema_version", "id", "created"],
   "properties": {

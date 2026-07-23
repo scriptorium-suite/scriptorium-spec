@@ -1,0 +1,19 @@
+{
+  "schema_version": "claim-evidence/1.0",
+  "claim_id": "synthetic-xq17-claim-missing-review-time",
+  "project": "synthetic-xq17-calibration",
+  "created": "2100-01-04T10:00:00Z",
+  "statement": "[SYNTHETIC] An accepted claim must retain its review timestamp.",
+  "kind": "observation",
+  "epistemic_status": "supported",
+  "review_state": "accepted",
+  "evidence": [
+    {
+      "relation": "supports",
+      "source_type": "experiment-run",
+      "source_id": "synthetic-xq17-run-0001",
+      "locator": "metrics[synthetic-error]"
+    }
+  ],
+  "generated_by": "synthetic-review-workflow/0.1.0"
+}
