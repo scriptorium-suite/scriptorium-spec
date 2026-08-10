@@ -5,7 +5,9 @@
 > 让 Scriptorium 套件各工具彼此交换文件的共享数据契约。
 
 > **产品状态：Public Alpha 契约发布候选。** Public Alpha 目标以 Windows
-> 为首发平台，并要求至少选择一个 agent 宿主；Codex 与 Claude Code 是地位相同的一等
+> 为首发平台，并要求至少选择一个 agent 宿主。核心契约同时支持通用项目、工程维护、
+> 个人软件开发和科研项目；科研执行与论断证据属于实验性 profile，不再阻挡核心发布。
+> Codex 与 Claude Code 是地位相同的一等
 > 目标宿主；canonical installer 已实现，但 Claude Code 的 live `SessionEnd` golden
 > path 对等验证仍是 release gap。用户的
 > Markdown 工作区、PDF 与代码保持权威；Provenance 提供

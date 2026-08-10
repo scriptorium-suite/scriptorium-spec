@@ -70,6 +70,7 @@ def validate_handoff(doc, errors):
 
 
 PROJECT_STATUS = {"planned", "active", "paused", "done", "archived"}
+PROJECT_PROFILES = {"general", "research", "engineering", "software"}
 NOTE_SOURCES = {"obsidian", "openclaw", "agent"}
 APPROVAL_STATES = {"draft", "approved", "applied"}
 READING_STATUSES = {"New", "To Read", "In Progress", "Read", "Not Reading"}
@@ -90,6 +91,8 @@ def validate_project(doc, errors):
         err(errors, "title", "missing title")
     if doc.get("status") not in PROJECT_STATUS:
         err(errors, "status", f"invalid status: {doc.get('status')!r}")
+    if "profile" in doc and doc["profile"] not in PROJECT_PROFILES:
+        err(errors, "profile", f"invalid profile: {doc.get('profile')!r}")
 
 
 def validate_note(doc, errors):

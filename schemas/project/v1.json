@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/scriptorium-suite/scriptorium-spec/blob/main/schemas/project/v1.json",
   "title": "Scriptorium Project Record v1",
-  "description": "One research project in the user-owned Markdown workspace. The reference adapter materializes it as Projects/<project_id>.md whose YAML frontmatter conforms to this schema; the body remains human-authored Markdown plus the separately owned append-only progress-log region. Obsidian is an optional editor. Provenance ingests supported frontmatter for portfolio and context retrieval without becoming the owner of the source file.",
+  "description": "One long-running project in the user-owned Markdown workspace. Research, engineering, and personal software work are supported profiles over the same project contract. The reference adapter materializes it as Projects/<project_id>.md whose YAML frontmatter conforms to this schema; the body remains human-authored Markdown plus the separately owned append-only progress-log region. Obsidian is an optional editor. Provenance ingests supported frontmatter for portfolio and context retrieval without becoming the owner of the source file.",
   "type": "object",
   "required": ["schema_version", "project_id", "title", "status"],
   "properties": {
@@ -13,6 +13,11 @@
       "description": "Stable kebab-case id; should match the repo dir name when there is one."
     },
     "title": { "type": "string" },
+    "profile": {
+      "type": "string",
+      "enum": ["general", "research", "engineering", "software"],
+      "description": "Optional presentation template. It does not change project identity or the core state contract."
+    },
     "status": {
       "type": "string",
       "enum": ["planned", "active", "paused", "done", "archived"]

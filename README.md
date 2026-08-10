@@ -5,7 +5,10 @@ English | [中文](README.zh.md)
 > The shared data contracts that let the Scriptorium suite's tools exchange files.
 
 > **Product status: Public Alpha contract release candidate.** The Public Alpha
-> target is Windows-first and requires at least one agent host. Codex and Claude
+> target is Windows-first and requires at least one agent host. The core contracts
+> support general, engineering, software, and research projects; research execution
+> and evidence formats remain an experimental profile rather than a core release gate.
+> Codex and Claude
 > Code are the two first-class target choices; canonical installers now exist, while
 > Claude Code live `SessionEnd` golden-path parity remains a release gap. The user's Markdown workspace,
 > PDFs, and code remain authoritative; Provenance supplies local capture, search,
@@ -28,9 +31,11 @@ See the contracts run through a real-interface, synthetic-data workflow in the
 ## Overview
 
 Scriptorium Spec defines the file formats used by the **Scriptorium** suite — a
-local-first research workflow designed for GitHub-comfortable researchers using
-at least one of its two target hosts, Codex or Claude Code, on Windows. Its core works
-over an ordinary project directory:
+local-first project context and continuity product for GitHub-comfortable users of
+long-running work. Research is the flagship reference profile, while the same core
+project, note, and session contracts support engineering maintenance and personal
+software development. The Windows-first core uses at least one of its two target
+hosts, Codex or Claude Code, and works over an ordinary project directory:
 Markdown, PDFs, and code remain user-owned sources of truth. Provenance records
 derived project context and high-value claims through an approval-backed memory
 workflow; optional tools add reference-library governance and slide output. It
