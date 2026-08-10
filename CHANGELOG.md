@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+Release candidate for **v2.3.0**.
+
+- Adds `project/1.1`, an additive optional `profile` field with `general`,
+  `engineering`, `software`, and `research` values. The field selects a
+  presentation template; it does not change project identity or core state.
+- Keeps `project/1.0` valid for existing projects. Producers that emit `profile`
+  must identify the record as `project/1.1` or a later compatible minor.
+- Broadens the product wording from research-only to long-running projects while
+  retaining research as the flagship reference profile. Experimental run and
+  claim-evidence contracts are not part of this stable-core candidate.
+
 ## v2.2.0 — 2026-07-20
 
 - Replaces all public worked examples and domain-bearing invalid fixtures with a

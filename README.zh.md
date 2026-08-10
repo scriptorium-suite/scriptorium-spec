@@ -5,7 +5,8 @@
 > 让 Scriptorium 套件各工具彼此交换文件的共享数据契约。
 
 > **产品状态：Public Alpha 契约基线。** Public Alpha 目标以 Windows
-> 为首发平台，并要求至少选择一个 agent 宿主；Codex 与 Claude Code 是地位相同的一等
+> 为首发平台，并要求至少选择一个 agent 宿主。核心契约支持通用、工程、软件和科研
+> 项目；实验运行与论断证据契约不进入本轮稳定基线。Codex 与 Claude Code 是地位相同的一等
 > 目标宿主；canonical installer 已实现，但 Claude Code 的 live `SessionEnd` golden
 > path 对等验证仍是 release gap。用户的
 > Markdown 工作区、PDF 与代码保持权威；Provenance 提供
@@ -148,11 +149,11 @@ Steward 的源码包名为 `scriptorium-steward`，CLI 为 `steward`。Provenanc
 
 ## 状态
 
-**Public Alpha 契约基线：v2.2.0。** 该基线以 Scriptorium v0.1.0 为兼容目标，
-不表示所有组件 tag 已经发布。跨仓与 Windows CI golden path 已覆盖
+**稳定核心契约候选：v2.3.0。** 在候选内容提交、复审、打标签并发布前，最近的已发布
+基线仍是 v2.2.0。跨仓与 Windows 验收路径已覆盖
 `init`/`doctor`/`status`/`inventory`/`demo`/
-`pull` 入口及 canonical host installer，但适配器级的人审迁移执行、套件安装包与
-外部 beta 证据仍是产品缺口。事件/同步层契约
+`pull` 入口及 canonical host installer；umbrella 候选也已提供固定组件组合与默认预览
+的源码安装器。重新运行远端 CI 与外部 beta 证据仍是发布缺口。事件/同步层契约
 （`note/1.0`、`session-summary/1.0`）已在 Provenance 实现；parsed-paper/reading-note/
 review/lineage 摄取尚未实现。
 

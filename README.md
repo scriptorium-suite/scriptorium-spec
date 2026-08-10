@@ -5,7 +5,9 @@ English | [中文](README.zh.md)
 > The shared data contracts that let the Scriptorium suite's tools exchange files.
 
 > **Product status: Public Alpha contract baseline.** The Public Alpha
-> target is Windows-first and requires at least one agent host. Codex and Claude
+> target is Windows-first and requires at least one agent host. The core contracts
+> support general, engineering, software, and research projects. Experimental run
+> and claim-evidence contracts are outside this stable baseline. Codex and Claude
 > Code are the two first-class target choices; canonical installers now exist, while
 > Claude Code live `SessionEnd` golden-path parity remains a release gap. The user's Markdown workspace,
 > PDFs, and code remain authoritative; Provenance supplies local capture, search,
@@ -28,9 +30,11 @@ See the contracts run through a real-interface, synthetic-data workflow in the
 ## Overview
 
 Scriptorium Spec defines the file formats used by the **Scriptorium** suite — a
-local-first research workflow designed for GitHub-comfortable researchers using
-at least one of its two target hosts, Codex or Claude Code, on Windows. Its core works
-over an ordinary project directory:
+local-first project context and continuity product for GitHub-comfortable users of
+long-running work. Research is the flagship reference profile, while the same core
+project, note, and session contracts support engineering maintenance and personal
+software development. The Windows-first core uses at least one of its two target
+hosts, Codex or Claude Code, and works over an ordinary project directory:
 Markdown, PDFs, and code remain user-owned sources of truth. Provenance records
 derived project context and high-value claims through an approval-backed memory
 workflow; optional tools add reference-library governance and slide output. It
@@ -156,12 +160,13 @@ the entrypoint ownership ADR defines that Public Alpha release boundary.
 
 ## Status
 
-**Public Alpha contract baseline: v2.2.0.** This baseline targets compatibility with
-Scriptorium v0.1.0; it does not claim that every component tag is already published.
-Cross-repository and Windows CI golden paths cover
+**Stable-core contract candidate: v2.3.0.** The latest published baseline remains
+v2.2.0 until the candidate is committed, reviewed, tagged, and released.
+Cross-repository and Windows acceptance paths cover
 the `init`/`doctor`/`status`/`inventory`/`demo`/`pull` entry and canonical host
-installers, but adapter-specific reviewed migration execution, a packaged suite
-installer, and external beta evidence remain product gaps.
+installers. The umbrella candidate now also exposes pinned component profiles and a
+preview-first source installer; fresh remote CI and external beta evidence remain
+release gaps.
 The event/sync-layer contracts (`note/1.0`, `session-summary/1.0`) are
 implemented in Provenance; Provenance ingestion of parsed-paper/reading-note/review/
 lineage is not yet implemented.
