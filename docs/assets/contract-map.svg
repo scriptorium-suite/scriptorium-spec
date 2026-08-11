@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560" role="img" aria-labelledby="title desc">
+  <title id="title">Scriptorium Spec contract map</title>
+  <desc id="desc">Shared schemas allow Scriptorium components to exchange files without depending on private internals.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#111827"/><stop offset="1" stop-color="#312e81"/></linearGradient>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#818cf8"/></marker>
+    <style>.title{font:700 42px ui-sans-serif,system-ui;fill:#f8fafc}.sub{font:500 19px ui-sans-serif,system-ui;fill:#cbd5e1}.box{fill:#0f172a;stroke:#475569;stroke-width:1.5;rx:22}.core{fill:#1e1b4b;stroke:#a5b4fc;stroke-width:2;rx:28}.label{font:700 22px ui-sans-serif,system-ui;fill:#e0e7ff}.body{font:500 16px ui-sans-serif,system-ui;fill:#cbd5e1}.small{font:600 13px ui-sans-serif,system-ui;fill:#a5b4fc}.arrow{stroke:#818cf8;stroke-width:4;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1280" height="560" fill="url(#bg)"/>
+  <text x="70" y="76" class="title">Scriptorium Spec</text>
+  <text x="70" y="110" class="sub">The shared contract layer: schemas, examples, conventions, and validation.</text>
+  <rect x="70" y="190" width="260" height="130" class="box"/><text x="105" y="237" class="label">Producers</text><text x="105" y="270" class="body">Steward, agents, importers</text><text x="105" y="296" class="small">write versioned JSON files</text>
+  <rect x="510" y="154" width="260" height="202" class="core"/><text x="555" y="214" class="label">Spec SSoT</text><text x="555" y="250" class="body">JSON Schemas</text><text x="555" y="278" class="body">Conventions</text><text x="555" y="306" class="body">Examples</text><text x="555" y="334" class="body">Stdlib validator</text>
+  <rect x="950" y="190" width="260" height="130" class="box"/><text x="985" y="237" class="label">Consumers</text><text x="985" y="270" class="body">Scriptorium, Provenance, Lectern</text><text x="985" y="296" class="small">read contracts, not internals</text>
+  <path d="M330 255 L510 255" class="arrow"/><path d="M770 255 L950 255" class="arrow"/>
+  <text x="70" y="466" class="body">Design rule: components exchange files. They do not call each other's private APIs.</text>
+  <text x="70" y="500" class="small">Versioned · Additive · Testable · Safe for independent component releases</text>
+</svg>

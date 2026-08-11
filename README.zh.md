@@ -1,169 +1,73 @@
-[English](README.md) | 中文
+# Scriptorium Spec
 
-# Scriptorium Spec（数据契约）
+[![CI](https://github.com/scriptorium-suite/scriptorium-spec/actions/workflows/ci.yml/badge.svg)](https://github.com/scriptorium-suite/scriptorium-spec/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/scriptorium-suite/scriptorium-spec)](https://github.com/scriptorium-suite/scriptorium-spec/releases)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-> 让 Scriptorium 套件各工具彼此交换文件的共享数据契约。
+Scriptorium Spec 是 Scriptorium 套件的数据契约源头。它定义各组件交换项目、文献、证据、审阅和 handoff 数据时使用的版本化文件格式，让组件可以独立开发、独立使用，又能组合成一套系统。
 
-> **产品状态：Public Alpha 契约发布候选。** Public Alpha 目标以 Windows
-> 为首发平台，并要求至少选择一个 agent 宿主。核心契约同时支持通用项目、工程维护、
-> 个人软件开发和科研项目；科研执行与论断证据属于实验性 profile，不再阻挡核心发布。
-> Codex 与 Claude Code 是地位相同的一等
-> 目标宿主；canonical installer 已实现，但 Claude Code 的 live `SessionEnd` golden
-> path 对等验证仍是 release gap。用户的
-> Markdown 工作区、PDF 与代码保持权威；Provenance 提供
-> 本地捕获、搜索、append-only 写回与高价值记忆的人审门禁。Zotero、Obsidian 与 Lectern
-> 均为可选能力，不是核心前置条件。
+![Scriptorium Spec 契约图](docs/assets/contract-map.svg)
 
-> 英文版为契约正本（canonical）；中英文 README 随同一版本维护，如有歧义以英文为准。
+## 为什么需要这个仓库
 
-## 相关文档
+Scriptorium 不是单体应用，而是一组可以拆分的组件。要让这种组织方式成立，所有组件必须对“项目文件、笔记、审阅、handoff、证据 claim、实验 run”这些对象有共同理解。这个仓库把这些约定变成清晰、可测试、可版本化的契约。
 
-本仓：[README](README.md) · [中文 README.zh](README.zh.md) · [CHANGELOG](CHANGELOG.md) · [specs/](specs/) · [schemas/](schemas/)
+核心规则是：组件交换文件，不互相调用私有内部 API。Steward 可以生产文献 handoff，Provenance 可以消费项目记忆，Scriptorium 可以调度流程，是因为它们都遵循这里定义的公开格式。
 
-要查看这些契约如何在“真实公共接口 + 全合成数据”的纵向链路中运行，请阅读
-[Scriptorium Public Alpha 产品案例](https://github.com/scriptorium-suite/scriptorium/blob/main/docs/case-study.zh-CN.md)。
+## 仓库内容
 
-**套件 / Suite:** [scriptorium-spec](https://github.com/scriptorium-suite/scriptorium-spec)（契约权威源） · [steward](https://github.com/scriptorium-suite/steward) · [Provenance](https://github.com/foxsplendid/Provenance) · [Academic-Slides-Agent / Lectern](https://github.com/foxsplendid/Academic-Slides-Agent) · [.github](https://github.com/scriptorium-suite/.github)
+| 区域 | 内容 |
+| --- | --- |
+| `schemas/` | project、note、session summary、library KB、handoff、parsed paper、lineage graph、reading note、review、experiment run、claim evidence 等 JSON Schema。 |
+| `examples/` | 每种公开格式的有效样例。 |
+| `specs/` | 版本、vault 布局、同步层、信任模型、文献自动化、执行与证据记录等文字规范。 |
+| `tools/validate.py` | 仅依赖标准库的验证器。 |
+| `tests/` | 契约检查与发布一致性测试。 |
 
-> 本仓=数据契约权威源（contract SSoT）；其余仓库镜像这些契约事实，不得各自分叉。
-> 套件入口与组件所有权见
-> [specs/suite-entry-and-ownership.md](specs/suite-entry-and-ownership.md)。
-
-## 概述
-
-Scriptorium Spec 规定了 **Scriptorium** 套件所用的文件格式——这是一套面向熟悉 GitHub、
-计划在 Windows 上至少使用 Codex 或 Claude Code 之一的科研工作者的本地优先工作流。核心直接工作在
-普通项目目录上：Markdown、PDF 与代码仍由用户持有并作为事实源；Provenance 通过审批流程
-记录派生项目上下文和高价值断言；可选工具再提供文献库治理与幻灯片输出。本仓库包含
-JSON Schema、约定文档、可用示例以及一个
-小型校验器。套件内的工具互不调用内部接口，只通过**文件**交换数据；文件格式由本仓库
-规定——任何工具、任何 agent、甚至你用文本编辑器，都可以等价地生产或消费这些文件。
-本仓库是整个套件唯一的硬耦合点。
-
-套件包含三个独立开发的工具：
-
-| 工具 | 职责 |
-|---|---|
-| **Steward**（文献管家） | 可选的独立文献库产品：Zotero 备份 → 盘点 → 提案 → 人审 → 执行 → 回滚；KB 与可选 Obsidian 导出 |
-| **Provenance**（来源/记忆） | 核心本地档案与审批式项目记忆账本：捕获 → 脱敏/假名化 → 搜索 → append-only 时间线 + 高价值断言人审 → 只读 MCP |
-| **Lectern**（讲台） | 独立、可选的学术汇报产品：论文 PDF 或 `handoff/1.x` → 证据池 → 人审大纲 → 原生可编辑 `.pptx` |
-
-所有权 ADR 将 Windows 配置、诊断、合成 demo 与 agent task 注册归于薄套件入口；
-该入口本身不成为新的数据存储。本地 umbrella 候选版现已实现默认预览的 `init`、
-`doctor`、`status`、仅盘点显式来源和元数据的 `inventory`、经人审的 Markdown/PDF
-迁移、`demo`、`pull`、canonical host installer 与 Windows CI；正式发布的安装包、
-真实宿主验收以及外部 beta 证据仍是 release gap。
-
-## 特性
-
-- **十二种交换格式**，每种都是一份 JSON Schema（Draft 2020-12）：
-
-  | 格式 | Schema | 生产者 | 消费者 |
-  |---|---|---|---|
-  | `library-kb/1.x` | [schemas/library-kb/v1.json](schemas/library-kb/v1.json) | Steward `export` | Provenance 文献摄取、Steward 工作流、agent |
-  | `proposal/1.x` | [schemas/proposal/v1.json](schemas/proposal/v1.json) | LLM / agent / 人工（三方等价） | Steward `apply` |
-  | `handoff/1.x` | [schemas/handoff/v1.json](schemas/handoff/v1.json) | Steward `pick`（1.0 单论文 / 1.1 多论文） | Lectern（可读两种形态） |
-  | `project/1.x` | [schemas/project/v1.json](schemas/project/v1.json) | 人工 / agent / Markdown frontmatter 适配器 | Provenance 项目组合/上下文、可选看板 |
-  | `note/1.x` | [schemas/note/v1.json](schemas/note/v1.json) | 宿主同步层或可选捕获适配器 | Provenance 受保护摄取/搜索 |
-  | `session-summary/1.x` | [schemas/session-summary/v1.json](schemas/session-summary/v1.json) | Codex / Claude Code 宿主工作流 | Provenance 审批流、项目进展日志 |
-  | `reading-note/1.x` | [schemas/reading-note/v1.json](schemas/reading-note/v1.json) | `read-paper` agent task | Steward 渲染器、文件型 agent 工作流、Provenance |
-  | `parsed-paper/1.x` | [schemas/parsed-paper/v1.json](schemas/parsed-paper/v1.json) | Steward `parse`（本地 GROBID） | `read-paper`、综述、Steward lineage、Provenance |
-  | `lineage-graph/1.x` | [schemas/lineage-graph/v1.json](schemas/lineage-graph/v1.json) | Steward `lineage` + agent 标注关系类型 | Steward 渲染器、文件型 agent 工作流、Provenance |
-  | `review/1.x` | [schemas/review/v1.json](schemas/review/v1.json) | `synthesize-direction` agent task | Markdown/文件输出、agent 工作流、Provenance |
-  | `experiment-run/1.x` | [schemas/experiment-run/v1.json](schemas/experiment-run/v1.json) | 外部计算执行器或 agent 工作流 | 文件型 agent 工作流；Provenance 摄取仍是 release gap |
-  | `claim-evidence/1.x` | [schemas/claim-evidence/v1.json](schemas/claim-evidence/v1.json) | agent/人工审核工作流 | 人工审核与文件型 agent 工作流；Provenance 摄取仍是 release gap |
-
-Lectern 当前消费 `handoff/1.x`，**不会**直接消费 `library-kb/1.x`。Provenance 当前已实现
-文献库、项目、笔记和会话数据，以及 `parsed-paper`、`reading-note`、`review`、
-`lineage-graph` 研究工件的本地摄取；新增的 experiment-run/claim-evidence 摄取仍是
-Public Alpha release gap。
-
-- **约定文档**：覆盖版本号规则、Markdown 项目组合、可选 Obsidian 导出/布局、config-root、事件/同步层（`sync-layer.md`）、产品方向（`product-direction.md`）、文献自动化（`literature-automation.md`）、研究执行与证据（`research-execution-and-evidence.md`）、套件入口/所有权与信任模型（`trust-model.md`）。
-- **可用示例**：[`examples/`](examples) 下每种格式都有示例，并保持与 schema 一致有效。
-  所有示例和无效测试夹具均属于刻意虚构的 XQ-17 演示世界；其中的人名、论文、标识符、路径、
-  会话、日期与结果均不描述任何真实人物或科研工作。
-- **零依赖校验器**（[`tools/validate.py`](tools/validate.py)）：仅校验承重约束，不依赖任何第三方库。
-- **稳定的版本约定**：`schema_version` 写进数据文件本身；major=破坏性、minor=增量；消费者忽略并保留未知字段。
-
-## 安装
-
-无需安装或打包——本仓库是一组规范、示例和一个自包含脚本。克隆后阅读即可：
-
-```
-git clone https://github.com/scriptorium-suite/scriptorium-spec.git
-cd scriptorium-spec
-```
-
-唯一可运行的产物 `tools/validate.py` 仅使用 Python 标准库（Python 3.x），无需安装任何依赖。
-
-## 用法
-
-在 Windows PowerShell 中校验全部示例：
+## 快速开始
 
 ```powershell
-$exampleFiles = (Get-ChildItem -LiteralPath .\examples -Filter '*.json').FullName
-python .\tools\validate.py $exampleFiles
+git clone https://github.com/scriptorium-suite/scriptorium-spec.git
+cd scriptorium-spec
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e .
+.\.venv\Scripts\python.exe tools\validate.py examples\*.json
 ```
 
-每个文件会打印 `ok` 或 `INVALID`（含逐字段错误路径）；退出码 `0` 表示全部有效。
-校验器按 `schema_version` 字段（如 `library-kb/1.0`）分派，刻意保持精简——
-`schemas/` 下的 JSON Schema 才是权威定义。
+运行测试：
 
-要编写一份文件，复制对应示例、修改后再重新校验即可。
-
-## 目录结构
-
-```
-scriptorium-spec/
-├── schemas/                  # JSON Schema（格式的权威定义）
-│   ├── library-kb/v1.json    # 文献库的规范化快照
-│   ├── proposal/v1.json      # 离线、可人审的重组方案
-│   ├── handoff/v1.json       # 待生成幻灯片的论文 PDF + 元数据（1.0 与 1.1 多论文）
-│   ├── project/v1.json       # 科研项目记录（Markdown frontmatter 是一种适配形式）
-│   ├── note/v1.json          # 自由文本捕获信封
-│   ├── session-summary/v1.json # Codex/Claude Code 会话写回（timeline + 待批高价值断言）
-│   ├── reading-note/v1.json   # 单篇论文分级解读（4 个可选阅读层级）
-│   ├── parsed-paper/v1.json   # 论文 PDF 的规范化本地解析（章节 + 参考文献 + 图表）
-│   ├── lineage-graph/v1.json  # 研究方向的引用脉络（节点 + 带类型的边）
-│   ├── review/v1.json         # 方向综述（叙事章节 + 对比表）
-│   ├── experiment-run/v1.json # 一次外部科研计算尝试的观察记录
-│   └── claim-evidence/v1.json # 可审核断言及其精确证据链接
-├── examples/                 # 每种格式的有效示例，含兼容性版本变体
-├── specs/                    # 约定文档
-│   ├── versioning.md         # schema_version 规则；忽略并保留未知字段
-│   ├── obsidian-export.md    # 可选 Obsidian 投影 + Zotero extra 字段约定
-│   ├── config-root.md        # ~/.config/scriptorium/<tool>/、优先级、密钥纪律
-│   ├── project-portfolio.md  # Markdown 工作区项目记录 + 可选看板
-│   ├── sync-layer.md         # 宿主捕获/审批层：单 worker、append-only
-│   ├── vault-layout.md       # Markdown 工作区布局与所有权
-│   ├── product-direction.md  # Public Alpha 产品决议
-│   ├── suite-entry-and-ownership.md # 套件入口与组件边界
-│   ├── literature-automation.md # 按需文献刷新（可选每周 opt-in）+ 库内新进展 digest
-│   ├── literature-reading.md # 分阶段阅读 + 方向脉络综述
-│   ├── research-execution-and-evidence.md # 外部实验记录 + 人审断言
-│   └── trust-model.md        # 套件安全/隐私保证（按主题）+ 诚实的边界说明
-├── tools/
-│   └── validate.py           # 零依赖、仅标准库的结构校验器
-├── CHANGELOG.md              # 版本历史
-└── LICENSE                   # Apache-2.0
+```powershell
+.\.venv\Scripts\python.exe -m pytest
 ```
 
-### 当前包名与命令行名称
+## 契约类型
 
-Steward 的源码包名为 `scriptorium-steward`，CLI 为 `steward`。Provenance 当前暴露
-`prov-*` CLI。Lectern 是 workspace，headless CLI 为 `lectern`。统一套件安装包尚未发布；
-入口所有权 ADR 定义了 Public Alpha 的发布边界。
+| 契约 | 用途 |
+| --- | --- |
+| `project` | 稳定项目身份与 portfolio 元数据。 |
+| `note` / `session-summary` | 同步层笔记与会话收尾摘要。 |
+| `library-kb` / `parsed-paper` / `lineage-graph` | 文献来源、解析和引用关系记录。 |
+| `reading-note` / `review` | 可读的阅读笔记与审阅结果。 |
+| `proposal` / `handoff` | 从文献工作转入下游任务的结构化交接。 |
+| `experiment-run` / `claim-evidence` | 开发中的执行事实与已审阅证据 claim 契约。 |
 
-## 状态
+## 版本策略
 
-**Public Alpha 契约发布候选：v2.3.0。** 当前工作树新增 experiment-run 与
-claim-evidence 契约，不表示对应 tag 或所有组件版本已经发布。本地跨仓与 Windows
-验收路径已覆盖 `init`/`doctor`/`status`/`inventory`/经人审迁移/`demo`/`pull`、
-canonical host installer 与安装生命周期；全新远端 CI、真实宿主验收、套件安装包与
-外部 beta 证据仍是产品缺口。事件/同步层契约
-（`note/1.0`、`session-summary/1.0`）及 parsed-paper/reading-note/review/lineage
-本地摄取已在 Provenance 实现；experiment-run/claim-evidence 摄取尚未实现。
+Schema 是版本化的，并尽量采用向后兼容的增量演进。消费者应该根据 `schema_version` 分发处理逻辑；遇到未知或不兼容版本时应拒绝，而不是猜测。破坏性修改需要新版本和新样例。
 
-## License
+## 与套件的关系
 
-[Apache-2.0](LICENSE)。
+这个仓库不是运行时包，而是以下组件共同遵守的数据契约层：
+
+- [scriptorium](https://github.com/scriptorium-suite/scriptorium)：套件入口和安装器。
+- [steward](https://github.com/scriptorium-suite/steward)：文献与 handoff 产物生产者。
+- [Provenance](https://github.com/foxsplendid/Provenance)：项目记忆与同步记录的消费者和生产者。
+- [Academic-Slides-Agent](https://github.com/foxsplendid/Academic-Slides-Agent)：可选的展示材料下游消费者。
+
+## 安全口径
+
+这些契约明确区分原始来源、AI 生成草稿、执行事实和用户审阅过的 claim。一次 run 成功并不自动等于科学结论或项目结论；claim 只有经过对应规范和运行时实现定义的审阅流程后，才可以成为 accepted 状态。
+
+## 许可证
+
+Apache-2.0。见 [LICENSE](LICENSE)。
