@@ -1,176 +1,73 @@
-English | [中文](README.zh.md)
-
 # Scriptorium Spec
 
-> The shared data contracts that let the Scriptorium suite's tools exchange files.
+[![CI](https://github.com/scriptorium-suite/scriptorium-spec/actions/workflows/ci.yml/badge.svg)](https://github.com/scriptorium-suite/scriptorium-spec/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/scriptorium-suite/scriptorium-spec)](https://github.com/scriptorium-suite/scriptorium-spec/releases)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-> **Product status: Public Alpha contract baseline.** The Public Alpha
-> target is Windows-first and requires at least one agent host. The core contracts
-> support general, engineering, software, and research projects. Experimental run
-> and claim-evidence contracts are outside this stable baseline. Codex and Claude
-> Code are the two first-class target choices; canonical installers now exist, while
-> Claude Code live `SessionEnd` golden-path parity remains a release gap. The user's Markdown workspace,
-> PDFs, and code remain authoritative; Provenance supplies local capture, search,
-> append-only writeback, and human-gated high-value memory. Zotero, Obsidian, and
-> Lectern are optional capabilities, not core requirements.
+Scriptorium Spec is the contract source of truth for the Scriptorium suite. It defines the versioned files that let independent tools exchange project, literature, evidence, review, and handoff data without importing each other's private code.
 
-## Related / 相关文档
+![Scriptorium Spec contract map](docs/assets/contract-map.svg)
 
-This repo: [README](README.md) · [中文 README.zh](README.zh.md) · [CHANGELOG](CHANGELOG.md) · [specs/](specs/) · [schemas/](schemas/)
+## Why this repository exists
 
-See the contracts run through a real-interface, synthetic-data workflow in the
-[Scriptorium Public Alpha case study](https://github.com/scriptorium-suite/scriptorium/blob/main/docs/case-study.zh-CN.md).
+Scriptorium is organized as a suite rather than a single monolithic application. That only works if every component can agree on what a project file, note, review, handoff, claim, or run record means. This repository keeps those agreements explicit, testable, and versioned.
 
-**Suite / 套件:** [scriptorium-spec](https://github.com/scriptorium-suite/scriptorium-spec) (contract SSoT) · [steward](https://github.com/scriptorium-suite/steward) · [Provenance](https://github.com/foxsplendid/Provenance) · [Academic-Slides-Agent / Lectern](https://github.com/foxsplendid/Academic-Slides-Agent) · [.github](https://github.com/scriptorium-suite/.github)
+The design rule is: components exchange files, not internals. Steward can produce a literature handoff, Provenance can consume project memory, and Scriptorium can coordinate the workflow because all of them share the same public contracts.
 
-> This repo = the contract SSoT; other repos mirror these contract facts, never fork them.
-> Suite entrypoint and component ownership are defined in
-> [specs/suite-entry-and-ownership.md](specs/suite-entry-and-ownership.md).
+## What's included
 
-## Overview
+| Area | Contents |
+| --- | --- |
+| `schemas/` | JSON Schemas for project, note, session summary, library KB, handoff, parsed paper, lineage graph, reading note, review, experiment run, and claim evidence. |
+| `examples/` | Valid examples for each public format. |
+| `specs/` | Human-readable conventions for versioning, vault layout, sync, trust, literature automation, and execution/evidence records. |
+| `tools/validate.py` | A standard-library validator for examples and downstream generated files. |
+| `tests/` | Contract checks and release consistency tests. |
 
-Scriptorium Spec defines the file formats used by the **Scriptorium** suite — a
-local-first project context and continuity product for GitHub-comfortable users of
-long-running work. Research is the flagship reference profile, while the same core
-project, note, and session contracts support engineering maintenance and personal
-software development. The Windows-first core uses at least one of its two target
-hosts, Codex or Claude Code, and works over an ordinary project directory:
-Markdown, PDFs, and code remain user-owned sources of truth. Provenance records
-derived project context and high-value claims through an approval-backed memory
-workflow; optional tools add reference-library governance and slide output. It
-contains JSON Schemas, convention documents, worked examples, and a small
-validator. The suite's tools never call each other's internals; they exchange
-**files** whose formats are specified here, so any tool — or any agent, or you
-with a text editor — can produce or consume them. This repository is the only
-hard coupling in the suite.
-
-The three suite tools (developed separately) are:
-
-| Tool | Role |
-|---|---|
-| **Steward** | Optional reference-library product: Zotero backup → audit → propose → human review → apply → rollback; KB and optional Obsidian exports |
-| **Provenance** | Core local archive and reviewed project-memory ledger: capture → redact/pseudonymize → search → append-only timeline + human-gated high-value claims → read-only MCP |
-| **Lectern** | Independent, optional academic-report product: paper PDF or `handoff/1.x` → evidence pool → human-reviewed outline → native editable `.pptx` |
-
-The ownership ADR assigns Windows setup, diagnostics, the synthetic demo, and
-agent-task registration to the thin suite entrypoint; it does not become another
-data store. A local umbrella candidate now implements preview-first `init`, `doctor`,
-`status`, explicit-root metadata-only `inventory`, `demo`, `pull`, canonical host
-installers, and Windows CI. Adapter-specific reviewed migration execution, a
-published installer/package, and external beta evidence remain gaps.
-
-## Features
-
-- **Ten exchange formats**, each a JSON Schema (Draft 2020-12):
-
-  | Format | Schema | Produced by | Consumed by |
-  |---|---|---|---|
-  | `library-kb/1.x` | [schemas/library-kb/v1.json](schemas/library-kb/v1.json) | Steward `export` | Provenance library ingest, Steward workflows, agents |
-  | `proposal/1.x` | [schemas/proposal/v1.json](schemas/proposal/v1.json) | LLM / agent / human (equivalent) | Steward `apply` |
-  | `handoff/1.x` | [schemas/handoff/v1.json](schemas/handoff/v1.json) | Steward `pick` (1.0 single-paper / 1.1 multi-paper) | Lectern (reads both shapes) |
-  | `project/1.x` | [schemas/project/v1.json](schemas/project/v1.json) | human / agent / Markdown-frontmatter adapter | Provenance portfolio/context, optional dashboards |
-  | `note/1.x` | [schemas/note/v1.json](schemas/note/v1.json) | host sync layer or optional capture adapter | Provenance protected ingest/search |
-  | `session-summary/1.x` | [schemas/session-summary/v1.json](schemas/session-summary/v1.json) | Codex / Claude Code host workflow | Provenance approval flow, project progress-log |
-  | `reading-note/1.x` | [schemas/reading-note/v1.json](schemas/reading-note/v1.json) | `read-paper` agent task | Steward renderers and file-based agent workflows; Provenance ingest is a release gap |
-  | `parsed-paper/1.x` | [schemas/parsed-paper/v1.json](schemas/parsed-paper/v1.json) | Steward `parse` (local GROBID) | `read-paper`, synthesis, Steward lineage |
-  | `lineage-graph/1.x` | [schemas/lineage-graph/v1.json](schemas/lineage-graph/v1.json) | Steward `lineage` + agent typing | Steward renderer and file-based agent workflows; Provenance ingest is a release gap |
-  | `review/1.x` | [schemas/review/v1.json](schemas/review/v1.json) | `synthesize-direction` agent task | Markdown/file output and agent workflows; Provenance ingest is a release gap |
-
-Lectern currently consumes `handoff/1.x`; it does **not** directly consume
-`library-kb/1.x`. Provenance currently ingests library/project/note/session data,
-but reading-note/review/lineage ingestion has not shipped and is intentionally
-listed above as a Public Alpha release gap.
-
-- **Convention specs** for versioning, the Markdown project portfolio, optional Obsidian export/layout, config-root layout, the event/sync layer (`sync-layer.md`), product direction (`product-direction.md`), literature automation (`literature-automation.md`), suite entry/ownership, and the trust model (`trust-model.md`).
-- **Worked examples** for every format under [`examples/`](examples), kept valid against the schemas.
-  Every example and invalid test fixture belongs to a deliberately fictional XQ-17 demo universe.
-  Names, papers, identifiers, paths, sessions, dates, and results do not describe real people or research.
-- **A stdlib-only validator** ([`tools/validate.py`](tools/validate.py)) that checks the load-bearing constraints — no external dependencies.
-- **Stable versioning rule**: `schema_version` travels inside the data; major = breaking, minor = additive; consumers ignore and preserve unknown fields.
-
-## Installation
-
-No installation or packaging — this repo is a set of specifications, examples,
-and one self-contained script. Clone it and read:
-
-```
-git clone https://github.com/scriptorium-suite/scriptorium-spec.git
-cd scriptorium-spec
-```
-
-The only runnable artifact, `tools/validate.py`, uses the Python standard
-library only (Python 3.x); there are no dependencies to install.
-
-## Usage
-
-Validate all worked examples in Windows PowerShell:
+## Quick start
 
 ```powershell
-$exampleFiles = (Get-ChildItem -LiteralPath .\examples -Filter '*.json').FullName
-python .\tools\validate.py $exampleFiles
+git clone https://github.com/scriptorium-suite/scriptorium-spec.git
+cd scriptorium-spec
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e .
+.\.venv\Scripts\python.exe tools\validate.py examples\*.json
 ```
 
-Each file prints `ok` or `INVALID` with per-field error paths; exit code `0`
-means all files are valid. The validator dispatches on the `schema_version`
-field (e.g. `library-kb/1.0`) and is intentionally minimal — the JSON Schemas
-under `schemas/` are the authoritative definition.
+Run the test suite:
 
-To author a file, copy the matching example, edit it, then re-validate.
-
-## Project Structure
-
-```
-scriptorium-spec/
-├── schemas/                  # JSON Schemas (authoritative format definitions)
-│   ├── library-kb/v1.json    # canonical reference-library snapshot
-│   ├── proposal/v1.json      # offline, human-reviewable reorganization plan
-│   ├── handoff/v1.json       # paper PDF + metadata staged for slides (1.0 + 1.1 multi-paper)
-│   ├── project/v1.json       # research-project record (Markdown frontmatter is one adapter)
-│   ├── note/v1.json          # free-text capture envelope
-│   ├── session-summary/v1.json # Codex/Claude Code session writeback (timeline + gated claims)
-│   ├── reading-note/v1.json   # per-paper staged interpretation (4 optional reading levels)
-│   ├── parsed-paper/v1.json   # normalized local parse of a paper PDF (sections + refs + figures/tables)
-│   ├── lineage-graph/v1.json  # a research direction's citation 脉络 (nodes + typed edges)
-│   └── review/v1.json         # direction synthesis (narrative sections + comparison table)
-├── examples/                 # valid examples per format, including compatibility variants
-├── specs/                    # convention documents
-│   ├── versioning.md         # schema_version rules; ignore/preserve unknown fields
-│   ├── obsidian-export.md    # optional Obsidian projection + Zotero extra-field conventions
-│   ├── config-root.md        # ~/.config/scriptorium/<tool>/, precedence, secrets rules
-│   ├── project-portfolio.md  # Markdown workspace project records + optional dashboard
-│   ├── sync-layer.md         # host capture/approval layer: single worker, append-only
-│   ├── vault-layout.md       # Markdown workspace layout and ownership
-│   ├── product-direction.md  # Public Alpha product decisions
-│   ├── suite-entry-and-ownership.md # suite entrypoint + component boundaries
-│   ├── literature-automation.md # on-demand literature refresh (optional weekly opt-in) + digest
-│   ├── literature-reading.md # staged reading + direction synthesis
-│   └── trust-model.md        # suite safety/privacy guarantees by theme + honest limits
-├── tools/
-│   └── validate.py           # minimal stdlib-only structural validator
-├── CHANGELOG.md              # version history
-└── LICENSE                   # Apache-2.0
+```powershell
+.\.venv\Scripts\python.exe -m pytest
 ```
 
-### Current package and CLI names
+## Contract families
 
-Steward's source package is `scriptorium-steward` and its CLI is `steward`.
-Provenance currently exposes the `prov-*` CLIs. Lectern is a workspace whose
-headless CLI is `lectern`. A single suite installer/package has not shipped yet;
-the entrypoint ownership ADR defines that Public Alpha release boundary.
+| Contract | Purpose |
+| --- | --- |
+| `project` | Stable project identity and portfolio metadata. |
+| `note` / `session-summary` | Sync-layer notes and session closeout summaries. |
+| `library-kb` / `parsed-paper` / `lineage-graph` | Literature source, parsing, and citation relationship records. |
+| `reading-note` / `review` | Human-readable reading and review outputs. |
+| `proposal` / `handoff` | Structured handoff from literature work into downstream project tasks. |
+| `experiment-run` / `claim-evidence` | Development contract for execution facts and reviewed evidence claims. |
 
-## Status
+## Versioning policy
 
-**Stable-core contract candidate: v2.3.0.** The latest published baseline remains
-v2.2.0 until the candidate is committed, reviewed, tagged, and released.
-Cross-repository and Windows acceptance paths cover
-the `init`/`doctor`/`status`/`inventory`/`demo`/`pull` entry and canonical host
-installers. The umbrella candidate now also exposes pinned component profiles and a
-preview-first source installer; fresh remote CI and external beta evidence remain
-release gaps.
-The event/sync-layer contracts (`note/1.0`, `session-summary/1.0`) are
-implemented in Provenance; Provenance ingestion of parsed-paper/reading-note/review/
-lineage is not yet implemented.
+Schemas are versioned and intended to evolve additively. A consumer should dispatch on `schema_version` and reject unknown or incompatible versions instead of guessing. Breaking changes require a new schema version and updated examples.
+
+## Relationship to the suite
+
+This repository is not a runtime package. It is the public contract layer for:
+
+- [scriptorium](https://github.com/scriptorium-suite/scriptorium): suite entry point and installer.
+- [steward](https://github.com/scriptorium-suite/steward): producer of literature and handoff artifacts.
+- [Provenance](https://github.com/foxsplendid/Provenance): consumer and producer of project memory and sync records.
+- [Academic-Slides-Agent](https://github.com/foxsplendid/Academic-Slides-Agent): optional downstream consumer for presentation artifacts.
+
+## Safety posture
+
+The contracts separate raw sources, AI-generated drafts, execution facts, and user-reviewed claims. A successful run record is not automatically a scientific or project claim. A claim becomes accepted only through the review semantics defined by the relevant spec and implemented by the runtime component.
 
 ## License
 
-[Apache-2.0](LICENSE).
+Apache-2.0. See [LICENSE](LICENSE).
